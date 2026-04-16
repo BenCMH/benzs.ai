@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BenZs | AI Creator Portfolio</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="is-loading">
+    <div class="site-loader" id="siteLoader" aria-hidden="true">
+        <div class="site-loader-inner">
+            <span class="site-loader-text" data-text="Loading">Loading</span>
+        </div>
+    </div>
+    <div class="custom-cursor" id="customCursor" aria-hidden="true"></div>
+    <div class="focus-band focus-band-top" aria-hidden="true"></div>
+    <div class="focus-band focus-band-bottom" aria-hidden="true"></div>
+        <nav class="navbar minimal-nav">
+        <a class="logo" href="index.html">BenZs</a>
+        <div class="navbar-subtitle">AI Creator Portfolio / Videos &amp; Animation</div>
+        <button class="hamburger-menu" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="menuOverlay">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <div class="menu-overlay" id="menuOverlay" aria-hidden="true">
+        <nav class="menu-overlay-nav" aria-label="Site navigation">
+            <div class="menu-overlay-graph" id="menuOverlayGraph">
+                <div class="menu-overlay-orbit" id="menuOverlayOrbit" aria-hidden="true">
+                    <span class="menu-overlay-core"></span>
+                </div>
+                <button class="menu-overlay-link menu-overlay-link-videos" type="button" data-page="videos" aria-label="AI Videos and Animation">
+                    <img class="menu-overlay-icon" src="images/icons/clapperboard.png" alt="" aria-hidden="true" draggable="false">
+                </button>
+                <div class="menu-video-preview-scaffold" aria-hidden="true">
+                    <span class="menu-video-preview-line menu-video-preview-line-vertical"></span>
+                    <span class="menu-video-preview-line menu-video-preview-line-horizontal"></span>
+                    <span class="menu-video-preview-node-dot"></span>
+                    <div class="menu-video-preview-card" aria-hidden="true">
+                        <div class="menu-video-preview-card-header">
+                            <img class="menu-preview-card-header-icon" src="images/icons/clapperboard.png" alt="" aria-hidden="true" draggable="false">
+                        </div>
+                        <div class="menu-video-preview-card-body">
+                            <div class="menu-video-preview-card-content">AI Videos &amp; Animation</div>
+                        </div>
+                    </div>
+                    <button class="menu-video-preview-hitarea" type="button" data-page="videos" aria-label="AI Videos and Animation"></button>
+                </div>
+                <button class="menu-overlay-link menu-overlay-link-images" type="button" data-page="images" aria-label="Image Generation and Enhancement">
+                    <img class="menu-overlay-icon" src="images/icons/photo.png" alt="" aria-hidden="true" draggable="false">
+                </button>
+                <div class="menu-image-preview-scaffold" aria-hidden="true">
+                    <span class="menu-image-preview-line menu-image-preview-line-horizontal"></span>
+                    <span class="menu-image-preview-line menu-image-preview-line-vertical"></span>
+                    <span class="menu-image-preview-line menu-image-preview-line-horizontal-tail"></span>
+                    <span class="menu-image-preview-node-dot"></span>
+                    <div class="menu-image-preview-card" aria-hidden="true">
+                        <div class="menu-image-preview-card-header">
+                            <img class="menu-preview-card-header-icon" src="images/icons/photo.png" alt="" aria-hidden="true" draggable="false">
+                        </div>
+                        <div class="menu-image-preview-card-body">
+                            <div class="menu-image-preview-card-content">Image Generation &amp; Enhancement</div>
+                        </div>
+                    </div>
+                    <button class="menu-image-preview-hitarea" type="button" data-page="images" aria-label="Image Generation and Enhancement"></button>
+                </div>
+                <button class="menu-overlay-link menu-overlay-link-comfy" type="button" data-page="comfy" aria-label="Custom ComfyUI Workflows and Solutions">
+                    <img class="menu-overlay-icon" src="images/icons/setting.png" alt="" aria-hidden="true" draggable="false">
+                </button>
+                <div class="menu-comfy-preview-scaffold" aria-hidden="true">
+                    <span class="menu-comfy-preview-line menu-comfy-preview-line-horizontal"></span>
+                    <span class="menu-comfy-preview-line menu-comfy-preview-line-vertical"></span>
+                    <span class="menu-comfy-preview-node-dot"></span>
+                    <div class="menu-comfy-preview-card" aria-hidden="true">
+                        <div class="menu-comfy-preview-card-header">
+                            <img class="menu-preview-card-header-icon" src="images/icons/setting.png" alt="" aria-hidden="true" draggable="false">
+                        </div>
+                        <div class="menu-comfy-preview-card-body">
+                            <div class="menu-comfy-preview-card-content">Custom ComfyUI Workflows &amp; Solutions</div>
+                        </div>
+                    </div>
+                    <button class="menu-comfy-preview-hitarea" type="button" data-page="comfy" aria-label="Custom ComfyUI Workflows and Solutions"></button>
+                </div>
+            </div>
+            <button class="menu-overlay-about-link" id="menuOverlayAboutLink" type="button" aria-label="Go to About section">
+                <span class="menu-overlay-about-link-label">About</span>
+                <span class="menu-overlay-about-link-caret" aria-hidden="true">^</span>
+            </button>
+            <section class="menu-overlay-about-panel" id="menuOverlayAboutPanel" aria-hidden="true">
+                <div class="menu-overlay-about-image-frame" aria-hidden="true">
+                    <img class="menu-overlay-about-image" src="images/profile.jpg" alt="Portrait of BenZs" draggable="false">
+                </div>
+                <p class="menu-overlay-about-kicker">About Me</p>
+                <p class="menu-overlay-about-copy">I build AI-native creative work across motion, still imagery, and custom workflow systems, blending visual storytelling with practical automation for polished, repeatable output.</p>
+            </section>
+        </nav>
+    </div>
+
+    <div class="site-glass-shell">
+        <div class="mouse-trail-layer" id="mouseTrailLayer" aria-hidden="true"></div>
+        <div class="portfolio-pages" id="portfolioPages">
+            <div class="portfolio-page is-active" data-portfolio-page="videos" aria-hidden="false">
+
+        <section id="home" class="hero">
+        <div class="container">
+            <h1>AI-generated motion, stills, and custom creative systems.</h1>
+            <p>A creator portfolio focused on cinematic video, polished image generation, and tailored ComfyUI workflow design.</p>
+            
+            <div class="video-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-track">
+                        <div class="carousel-item" style="--carousel-thumb: url('../images/thumbnails/th_beyondtheedge_part2.png');">
+                            <video width="100%" height="auto" autoplay poster="images/thumbnails/th_beyondtheedge_part2.png">
+                                <source src="videos/beyondtheedge_part2.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div class="carousel-item" style="--carousel-thumb: url('../images/thumbnails/th_deincarnation_part.png');">
+                            <video width="100%" height="auto" poster="images/thumbnails/th_deincarnation_part.png">
+                                <source src="videos/deincarnation_part.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div class="carousel-item" style="--carousel-thumb: url('../images/thumbnails/th_fenyves_part.png');">
+                            <video width="100%" height="auto" poster="images/thumbnails/th_fenyves_part.png">
+                                <source src="videos/fenyves_part.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div class="carousel-item" style="--carousel-thumb: url('../images/thumbnails/th_wtsgo_scene1.png');">
+                            <video width="100%" height="auto" poster="images/thumbnails/th_wtsgo_scene1.png">
+                                <source src="videos/wtsgo_scene1.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-controls"> 
+                    <button class="carousel-btn prev" type="button" onclick="moveCarousel(-1)">&#10094;</button>
+                    <div class="volume-control" id="volumeControl">
+                        <button class="carousel-btn mute" type="button" id="muteBtn" onclick="toggleMute()" aria-label="Toggle sound" aria-pressed="true"><img class="mute-btn-icon" src="images/icons/mute.png" alt="" aria-hidden="true"></button>
+                        <div class="volume-slider-wrap">
+                            <input class="volume-slider" id="volumeSlider" type="range" min="0" max="100" value="72" aria-label="Video volume">
+                        </div>
+                    </div>
+                    <button class="carousel-btn next" type="button" onclick="moveCarousel(1)">&#10095;</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="video-gallery">
+        <div class="container">
+            <h2>AI Parody Commercials &amp; Side Projects</h2>
+            <p class="gallery-intro">A selected mix of AI parody commercials, concept spots, experimental edits, and side projects exploring motion, storytelling, and visual style.</p>
+            <div class="gallery-grid">
+                <div class="gallery-item tall">
+                    <div class="gallery-media">
+                        <video width="100%" height="auto" preload="metadata">
+                            <source src="videos/aiparodies/Avengers_couchhook_text.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="gallery-item square">
+                    <div class="gallery-media">
+                        <video width="100%" height="auto" preload="metadata">
+                            <source src="videos/aiparodies/BladeRunner_2049_2.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="gallery-item wide">
+                    <div class="gallery-media">
+                        <video width="100%" height="auto" preload="metadata">
+                            <source src="videos/aiparodies/breakingbad.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="gallery-item tall">
+                    <div class="gallery-media">
+                        <video width="100%" height="auto" preload="metadata">
+                            <source src="videos/aiparodies/ExMachina+podcasthook+text2.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="gallery-item square">
+                    <div class="gallery-media">
+                        <video width="100%" height="auto" preload="metadata">
+                            <source src="videos/aiparodies/geppetto_fin2_24fps.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="gallery-item square">
+                    <div class="gallery-media">
+                        <video width="100%" height="auto" preload="metadata">
+                            <source src="videos/aiparodies/GoodJob_part.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="gallery-item square">
+                    <div class="gallery-media">
+                        <video width="100%" height="auto" preload="metadata">
+                            <source src="videos/aiparodies/Jinny_INTRO_1080p.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="gallery-item wide">
+                    <div class="gallery-media">
+                        <video width="100%" height="auto" preload="metadata">
+                            <source src="videos/aiparodies/j_transf_5variations_03_29_1080p.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="gallery-item wide">
+                    <div class="gallery-media">
+                        <video width="100%" height="auto" preload="metadata">
+                            <source src="videos/aiparodies/matrix_24fps_2+hook_a.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="gallery-item square">
+                    <div class="gallery-media">
+                        <video width="100%" height="auto" preload="metadata">
+                            <source src="videos/aiparodies/Pavilon_stable_test.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="gallery-item square">
+                    <div class="gallery-media">
+                        <video width="100%" height="auto" preload="metadata">
+                            <source src="videos/aiparodies/phase1.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="gallery-item tall">
+                    <div class="gallery-media">
+                        <video width="100%" height="auto" preload="metadata">
+                            <source src="videos/aiparodies/TheLordofTheRings.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="gallery-item wide gallery-item-bottom">
+                    <div class="gallery-media">
+                        <video width="100%" height="auto" preload="metadata">
+                            <source src="videos/aiparodies/WolfofTheWallStreet_24fps4.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+            </div>
+            <div class="portfolio-page portfolio-page-images" data-portfolio-page="images" aria-hidden="true">
+                <section id="home-images" class="image-library-shell">
+                    <div class="container">
+                        <div class="image-library-layout">
+                            <aside class="image-library-sidebar" aria-label="Image gallery categories">
+                                <p class="image-library-kicker">Image Generation &amp; Enhancement</p>
+                                <h1>Curated still-image work inside a cleaner, category-driven gallery.</h1>
+                                <nav class="image-library-nav">
+                                    <div class="image-library-nav-group">
+                                        <p class="image-library-nav-group-label">[ Image Gallery ]</p>
+                                        <button class="image-library-nav-button is-active" type="button" data-image-category="cinematic" aria-pressed="true">Cinematic &amp; Film Visuals</button>
+                                        <button class="image-library-nav-button" type="button" data-image-category="commercial" aria-pressed="false">Commercial</button>
+                                        <button class="image-library-nav-button" type="button" data-image-category="influencers" aria-pressed="false">AI Influencers &amp; Lifestyle</button>
+                                        <button class="image-library-nav-button" type="button" data-image-category="architecture" aria-pressed="false">Architecture &amp; Interior Visualization</button>
+                                        <button class="image-library-nav-button" type="button" data-image-category="ecommerce" aria-pressed="false">E-commerce &amp; Product Imagery</button>
+                                        <button class="image-library-nav-button" type="button" data-image-category="art" aria-pressed="false">Art &amp; Concept Art</button>
+                                        <button class="image-library-nav-button" type="button" data-image-category="graphic" aria-pressed="false">Graphic &amp; Campaign Visuals</button>
+                                    </div>
+                                    <div class="image-library-nav-group image-library-nav-group-enhancement">
+                                        <p class="image-library-nav-group-label">[ Enhancement &amp; Restoration ]</p>
+                                        <button class="image-library-nav-button image-library-nav-button-enhancement" type="button" data-image-section-target="enhancement">Before &amp; After Reveal</button>
+                                    </div>
+                                </nav>
+                            </aside>
+                            <div class="image-library-content">
+                                <div class="image-library-panel is-active" data-gallery-category="cinematic">
+                                    <div class="image-library-panel-head">
+                                        <p class="image-library-panel-label">Photo / Visual Gallery</p>
+                                        <h2>Cinematic &amp; Film Visuals</h2>
+                                    </div>
+                                    <div class="image-library-grid">
+                                        <div class="image-library-grid-track">
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/cinematic/1a.png" alt="Cinematic gallery image 1" loading="lazy" width="5504" height="3072"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/cinematic/1b.png" alt="Cinematic gallery image 2" loading="lazy" width="5504" height="3072"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/cinematic/2.png" alt="Cinematic gallery image 3" loading="lazy" width="5504" height="3072"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/cinematic/3a.png" alt="Cinematic gallery image 4" loading="lazy" width="5504" height="3072"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/cinematic/3b.png" alt="Cinematic gallery image 5" loading="lazy" width="5504" height="3072"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/cinematic/hf_20260320_205816_1f6cbf58-48c8-4d34-af16-dcfb802029b4.png" alt="Cinematic gallery image 6" loading="lazy" width="2752" height="1536"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/cinematic/hf_20260320_210007_769abae0-7828-4fd3-8699-a539ba2e6820.jpeg" alt="Cinematic gallery image 7" loading="lazy" width="2752" height="1536"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/cinematic/hf_20260320_210224_28b80cf6-5461-4690-8e42-d5e2ecc2babf.png" alt="Cinematic gallery image 8" loading="lazy" width="2560" height="1440"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/cinematic/hf_20260320_210421_6fe9be37-8d4d-4c4d-ae69-fd46119f5162.png" alt="Cinematic gallery image 9" loading="lazy" width="2752" height="1536"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/cinematic/hf_20260320_210612_51817d6d-f8f1-45ab-adc2-b775e7162514.png" alt="Cinematic gallery image 10" loading="lazy" width="2752" height="1536"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/cinematic/hf_20260320_211326_0cd7d47a-abdb-407f-9a16-854d7a188ad6.png" alt="Cinematic gallery image 11" loading="lazy" width="2752" height="1536"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/cinematic/hf_20260320_211533_d333a39c-557c-4a4f-be4c-32560c17e575.png" alt="Cinematic gallery image 12" loading="lazy" width="2752" height="1536"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/cinematic/hf_20260320_211713_b5934563-fec1-44b7-a81b-ae317edda61f.png" alt="Cinematic gallery image 13" loading="lazy" width="2560" height="1440"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/cinematic/hf_20260320_211939_edb0d4c3-8392-4d1b-a8f1-29e2eb6c04f3.png" alt="Cinematic gallery image 14" loading="lazy" width="2560" height="1440"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/cinematic/hf_20260320_212210_7ac3398c-eff0-4a53-bb86-7c6d3c62a983.png" alt="Cinematic gallery image 15" loading="lazy" width="2560" height="1440"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/cinematic/hf_20260320_212216_f6b96fae-7a90-41ce-84aa-cab52b08ec91.png" alt="Cinematic gallery image 16" loading="lazy" width="2752" height="1536"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/cinematic/hf_20260320_212353_9f789e27-d139-4a3d-bccb-7f0cee22c823.png" alt="Cinematic gallery image 17" loading="lazy" width="2560" height="1440"></figure>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="image-library-panel" data-gallery-category="commercial" hidden>
+                                    <div class="image-library-panel-head">
+                                        <p class="image-library-panel-label">Photo / Visual Gallery</p>
+                                        <h2>Commercial</h2>
+                                    </div>
+                                    <div class="image-library-grid">
+                                        <div class="image-library-grid-track">
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/commercial/1.png" alt="Commercial gallery image 1" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/1cc.png" alt="Commercial gallery image 2" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/1ff.png" alt="Commercial gallery image 3" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/commercial/1santa.png" alt="Commercial gallery image 4" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/commercial/2cc.png" alt="Commercial gallery image 5" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/2ff.png" alt="Commercial gallery image 6" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/3cc.png" alt="Commercial gallery image 7" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/commercial/4.png" alt="Commercial gallery image 8" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/commercial/4cc.png" alt="Commercial gallery image 9" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/5.png" alt="Commercial gallery image 10" loading="lazy" width="1024" height="1536"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/5cc.png" alt="Commercial gallery image 11" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/commercial/5ff.png" alt="Commercial gallery image 12" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/commercial/5px.png" alt="Commercial gallery image 13" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/6.png" alt="Commercial gallery image 14" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/6ff.png" alt="Commercial gallery image 15" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/commercial/7ff.png" alt="Commercial gallery image 16" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/commercial/9.png" alt="Commercial gallery image 17" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/10.png" alt="Commercial gallery image 18" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/11.png" alt="Commercial gallery image 19" loading="lazy" width="1024" height="1536"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/commercial/14.png" alt="Commercial gallery image 20" loading="lazy" width="1024" height="1536"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/commercial/18.png" alt="Commercial gallery image 21" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/22.png" alt="Commercial gallery image 22" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/22ch.png" alt="Commercial gallery image 23" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/commercial/25.png" alt="Commercial gallery image 24" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/commercial/26ch.png" alt="Commercial gallery image 25" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/28.png" alt="Commercial gallery image 26" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/35ch.png" alt="Commercial gallery image 27" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/commercial/36.png" alt="Commercial gallery image 28" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/commercial/39.png" alt="Commercial gallery image 29" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/ch_2.png" alt="Commercial gallery image 30" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/cow.png" alt="Commercial gallery image 31" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/commercial/donkey3.png" alt="Commercial gallery image 32" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/commercial/drW1.png" alt="Commercial gallery image 33" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/drW2.png" alt="Commercial gallery image 34" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/commercial/duck.png" alt="Commercial gallery image 35" loading="lazy" width="1024" height="1024"></figure>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="image-library-panel" data-gallery-category="influencers" hidden>
+                                    <div class="image-library-panel-head">
+                                        <p class="image-library-panel-label">Photo / Visual Gallery</p>
+                                        <h2>AI Influencers &amp; Lifestyle</h2>
+                                    </div>
+                                    <div class="image-library-grid">
+                                        <div class="image-library-grid-track">
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/influencers_and_lifestyle/1.png" alt="AI Influencers and Lifestyle gallery image 1" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/2.png" alt="AI Influencers and Lifestyle gallery image 2" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/3.png" alt="AI Influencers and Lifestyle gallery image 3" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/influencers_and_lifestyle/4.png" alt="AI Influencers and Lifestyle gallery image 4" loading="lazy" width="1536" height="2752"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/influencers_and_lifestyle/5.png" alt="AI Influencers and Lifestyle gallery image 5" loading="lazy" width="1536" height="2752"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/6.png" alt="AI Influencers and Lifestyle gallery image 6" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/7.png" alt="AI Influencers and Lifestyle gallery image 7" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/influencers_and_lifestyle/8.png" alt="AI Influencers and Lifestyle gallery image 8" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/influencers_and_lifestyle/9.png" alt="AI Influencers and Lifestyle gallery image 9" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/10.png" alt="AI Influencers and Lifestyle gallery image 10" loading="lazy" width="1536" height="2752"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/11.png" alt="AI Influencers and Lifestyle gallery image 11" loading="lazy" width="1536" height="2752"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/influencers_and_lifestyle/12.png" alt="AI Influencers and Lifestyle gallery image 12" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/influencers_and_lifestyle/13.png" alt="AI Influencers and Lifestyle gallery image 13" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/14.png" alt="AI Influencers and Lifestyle gallery image 14" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/15.png" alt="AI Influencers and Lifestyle gallery image 15" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/influencers_and_lifestyle/16.png" alt="AI Influencers and Lifestyle gallery image 16" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/influencers_and_lifestyle/17.png" alt="AI Influencers and Lifestyle gallery image 17" loading="lazy" width="1536" height="2752"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/18.png" alt="AI Influencers and Lifestyle gallery image 18" loading="lazy" width="1536" height="2752"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/19.png" alt="AI Influencers and Lifestyle gallery image 19" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/influencers_and_lifestyle/20.png" alt="AI Influencers and Lifestyle gallery image 20" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/influencers_and_lifestyle/21.png" alt="AI Influencers and Lifestyle gallery image 21" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/23.png" alt="AI Influencers and Lifestyle gallery image 22" loading="lazy" width="1536" height="2752"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/24.png" alt="AI Influencers and Lifestyle gallery image 23" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/influencers_and_lifestyle/25.png" alt="AI Influencers and Lifestyle gallery image 24" loading="lazy" width="1856" height="2304"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/influencers_and_lifestyle/26.png" alt="AI Influencers and Lifestyle gallery image 25" loading="lazy" width="1536" height="2752"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/27.png" alt="AI Influencers and Lifestyle gallery image 26" loading="lazy" width="1856" height="2304"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/28.png" alt="AI Influencers and Lifestyle gallery image 27" loading="lazy" width="1792" height="2400"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/influencers_and_lifestyle/29.png" alt="AI Influencers and Lifestyle gallery image 28" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/influencers_and_lifestyle/30.png" alt="AI Influencers and Lifestyle gallery image 29" loading="lazy" width="1536" height="2752"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/32.png" alt="AI Influencers and Lifestyle gallery image 30" loading="lazy" width="1792" height="2400"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/33.png" alt="AI Influencers and Lifestyle gallery image 31" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/influencers_and_lifestyle/34.png" alt="AI Influencers and Lifestyle gallery image 32" loading="lazy" width="1536" height="2752"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/influencers_and_lifestyle/35.png" alt="AI Influencers and Lifestyle gallery image 33" loading="lazy" width="1856" height="2304"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/36.png" alt="AI Influencers and Lifestyle gallery image 34" loading="lazy" width="1792" height="2400"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/37.png" alt="AI Influencers and Lifestyle gallery image 35" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/influencers_and_lifestyle/38.png" alt="AI Influencers and Lifestyle gallery image 36" loading="lazy" width="1536" height="2752"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/influencers_and_lifestyle/39.png" alt="AI Influencers and Lifestyle gallery image 37" loading="lazy" width="1856" height="2304"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/40.png" alt="AI Influencers and Lifestyle gallery image 38" loading="lazy" width="1792" height="2400"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/influencers_and_lifestyle/41.png" alt="AI Influencers and Lifestyle gallery image 39" loading="lazy" width="2048" height="2048"></figure>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="image-library-panel" data-gallery-category="architecture" hidden>
+                                    <div class="image-library-panel-head">
+                                        <p class="image-library-panel-label">Photo / Visual Gallery</p>
+                                        <h2>Architecture &amp; Interior Visualization</h2>
+                                    </div>
+                                    <div class="image-library-grid">
+                                        <div class="image-library-grid-track">
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/architecture_and_interior_visualization/1.jpg" alt="Architecture and Interior Visualization gallery image 1" loading="lazy" width="1920" height="1080"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/architecture_and_interior_visualization/2.jpg" alt="Architecture and Interior Visualization gallery image 2" loading="lazy" width="1920" height="1080"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/architecture_and_interior_visualization/ex2.png" alt="Architecture and Interior Visualization gallery image 3" loading="lazy" width="1920" height="1080"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/architecture_and_interior_visualization/intro.png" alt="Architecture and Interior Visualization gallery image 4" loading="lazy" width="1920" height="1080"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/architecture_and_interior_visualization/intro2.png" alt="Architecture and Interior Visualization gallery image 5" loading="lazy" width="1920" height="1080"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/architecture_and_interior_visualization/intro3.png" alt="Architecture and Interior Visualization gallery image 6" loading="lazy" width="1920" height="1080"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/architecture_and_interior_visualization/pastel_1.png" alt="Architecture and Interior Visualization gallery image 7" loading="lazy" width="1600" height="1200"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/architecture_and_interior_visualization/skill1.png" alt="Architecture and Interior Visualization gallery image 8" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/architecture_and_interior_visualization/skill2.png" alt="Architecture and Interior Visualization gallery image 9" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/architecture_and_interior_visualization/skill3.png" alt="Architecture and Interior Visualization gallery image 10" loading="lazy" width="2048" height="2048"></figure>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="image-library-panel" data-gallery-category="ecommerce" hidden>
+                                    <div class="image-library-panel-head">
+                                        <p class="image-library-panel-label">Photo / Visual Gallery</p>
+                                        <h2>E-commerce &amp; Product Imagery</h2>
+                                    </div>
+                                    <div class="image-library-grid">
+                                        <div class="image-library-grid-track">
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/e-commerce_and_product_imagery/1.png" alt="E-commerce and Product Imagery gallery image 1" loading="lazy" width="1080" height="1536"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/e-commerce_and_product_imagery/1b.png" alt="E-commerce and Product Imagery gallery image 2" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/e-commerce_and_product_imagery/2.png" alt="E-commerce and Product Imagery gallery image 3" loading="lazy" width="1080" height="1536"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/e-commerce_and_product_imagery/2b.png" alt="E-commerce and Product Imagery gallery image 4" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/e-commerce_and_product_imagery/3.png" alt="E-commerce and Product Imagery gallery image 5" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/e-commerce_and_product_imagery/3b.png" alt="E-commerce and Product Imagery gallery image 6" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/e-commerce_and_product_imagery/4.png" alt="E-commerce and Product Imagery gallery image 7" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/e-commerce_and_product_imagery/4b.png" alt="E-commerce and Product Imagery gallery image 8" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/e-commerce_and_product_imagery/5b.png" alt="E-commerce and Product Imagery gallery image 9" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/e-commerce_and_product_imagery/5px.png" alt="E-commerce and Product Imagery gallery image 10" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/e-commerce_and_product_imagery/6.png" alt="E-commerce and Product Imagery gallery image 11" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/e-commerce_and_product_imagery/6b.png" alt="E-commerce and Product Imagery gallery image 12" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/e-commerce_and_product_imagery/7.png" alt="E-commerce and Product Imagery gallery image 13" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/e-commerce_and_product_imagery/7b.png" alt="E-commerce and Product Imagery gallery image 14" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/e-commerce_and_product_imagery/8.png" alt="E-commerce and Product Imagery gallery image 15" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/e-commerce_and_product_imagery/8b.png" alt="E-commerce and Product Imagery gallery image 16" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/e-commerce_and_product_imagery/9.png" alt="E-commerce and Product Imagery gallery image 17" loading="lazy" width="1080" height="1536"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/e-commerce_and_product_imagery/9b.png" alt="E-commerce and Product Imagery gallery image 18" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/e-commerce_and_product_imagery/10.png" alt="E-commerce and Product Imagery gallery image 19" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/e-commerce_and_product_imagery/10b.png" alt="E-commerce and Product Imagery gallery image 20" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/e-commerce_and_product_imagery/11.png" alt="E-commerce and Product Imagery gallery image 21" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/e-commerce_and_product_imagery/11b.png" alt="E-commerce and Product Imagery gallery image 22" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/e-commerce_and_product_imagery/drW1.png" alt="E-commerce and Product Imagery gallery image 23" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/e-commerce_and_product_imagery/drW2.png" alt="E-commerce and Product Imagery gallery image 24" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/e-commerce_and_product_imagery/smurf_boy_original.png" alt="E-commerce and Product Imagery gallery image 25" loading="lazy" width="6144" height="6144"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/e-commerce_and_product_imagery/smurf_girl_original.png" alt="E-commerce and Product Imagery gallery image 26" loading="lazy" width="6144" height="6144"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/e-commerce_and_product_imagery/woman2_part1.png" alt="E-commerce and Product Imagery gallery image 27" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/e-commerce_and_product_imagery/woman2_part3_b2.png" alt="E-commerce and Product Imagery gallery image 28" loading="lazy" width="1024" height="1024"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/e-commerce_and_product_imagery/woman2_part4.png" alt="E-commerce and Product Imagery gallery image 29" loading="lazy" width="1024" height="1024"></figure>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="image-library-panel" data-gallery-category="art" hidden>
+                                    <div class="image-library-panel-head">
+                                        <p class="image-library-panel-label">Photo / Visual Gallery</p>
+                                        <h2>Art &amp; Concept Art</h2>
+                                    </div>
+                                    <div class="image-library-grid">
+                                        <div class="image-library-grid-track">
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/art_and_concept_art/abigail.png" alt="Art and Concept Art gallery image 1" loading="lazy" width="803" height="1240"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/art_and_concept_art/board_fin_up2.png" alt="Art and Concept Art gallery image 2" loading="lazy" width="1024" height="1456"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/art_and_concept_art/béka2-topaz-enhance-4x.png" alt="Art and Concept Art gallery image 3" loading="lazy" width="4096" height="4096"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/art_and_concept_art/heindrich.png" alt="Art and Concept Art gallery image 4" loading="lazy" width="803" height="1240"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/art_and_concept_art/horatio.png" alt="Art and Concept Art gallery image 5" loading="lazy" width="803" height="1240"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/art_and_concept_art/icon_attacker-up.png" alt="Art and Concept Art gallery image 6" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/art_and_concept_art/icon_builder-up.png" alt="Art and Concept Art gallery image 7" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/art_and_concept_art/icon_contraption-up.png" alt="Art and Concept Art gallery image 8" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/art_and_concept_art/icon_gadget-up.png" alt="Art and Concept Art gallery image 9" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/art_and_concept_art/icon_specialist-up.png" alt="Art and Concept Art gallery image 10" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/art_and_concept_art/icon_tier_1-up.png" alt="Art and Concept Art gallery image 11" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/art_and_concept_art/icon_tier_2-up.png" alt="Art and Concept Art gallery image 12" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/art_and_concept_art/icon_tier_3-up.png" alt="Art and Concept Art gallery image 13" loading="lazy" width="2048" height="2048"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/art_and_concept_art/jeremy.png" alt="Art and Concept Art gallery image 14" loading="lazy" width="803" height="1240"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/art_and_concept_art/kelvin.png" alt="Art and Concept Art gallery image 15" loading="lazy" width="803" height="1240"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/art_and_concept_art/keselyű-topaz-enhance-4x.png" alt="Art and Concept Art gallery image 16" loading="lazy" width="4096" height="4096"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/art_and_concept_art/krokodil4-topaz-enhance-4x.png" alt="Art and Concept Art gallery image 17" loading="lazy" width="4096" height="4096"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/art_and_concept_art/kígyó3-topaz-enhance-4x.png" alt="Art and Concept Art gallery image 18" loading="lazy" width="4096" height="4096"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/art_and_concept_art/maverick_and_his_son.png" alt="Art and Concept Art gallery image 19" loading="lazy" width="803" height="1240"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/art_and_concept_art/ref_0.png" alt="Art and Concept Art gallery image 20" loading="lazy" width="5504" height="3072"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/art_and_concept_art/ref_1.png" alt="Art and Concept Art gallery image 21" loading="lazy" width="5504" height="3072"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/art_and_concept_art/roger.png" alt="Art and Concept Art gallery image 22" loading="lazy" width="803" height="1240"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/art_and_concept_art/tool_gear.png" alt="Art and Concept Art gallery image 23" loading="lazy" width="512" height="768"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/art_and_concept_art/tool_iron_ingot.png" alt="Art and Concept Art gallery image 24" loading="lazy" width="512" height="768"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/art_and_concept_art/tool_screw.png" alt="Art and Concept Art gallery image 25" loading="lazy" width="512" height="768"></figure>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="image-library-panel" data-gallery-category="graphic" hidden>
+                                    <div class="image-library-panel-head">
+                                        <p class="image-library-panel-label">Photo / Visual Gallery</p>
+                                        <h2>Graphic &amp; Campaign Visuals</h2>
+                                    </div>
+                                    <div class="image-library-grid">
+                                        <div class="image-library-grid-track">
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/graphic_and_campaign_visuals/1ref.png" alt="Graphic and Campaign Visuals gallery image 1" loading="lazy" width="512" height="768"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/graphic_and_campaign_visuals/b_cs_1ref.png" alt="Graphic and Campaign Visuals gallery image 2" loading="lazy" width="512" height="768"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/graphic_and_campaign_visuals/Jolly wallpaper.png" alt="Graphic and Campaign Visuals gallery image 3" loading="lazy" width="1024" height="1536"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/graphic_and_campaign_visuals/Jolly wallpaper_nagy.png" alt="Graphic and Campaign Visuals gallery image 4" loading="lazy" width="5120" height="7680"></figure>
+                                            <figure class="image-library-card image-library-card-tall"><img src="images/gallery/graphic_and_campaign_visuals/k_g_2ref.png" alt="Graphic and Campaign Visuals gallery image 5" loading="lazy" width="512" height="768"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/graphic_and_campaign_visuals/ref.jpg" alt="Graphic and Campaign Visuals gallery image 6" loading="lazy" width="1185" height="1800"></figure>
+                                            <figure class="image-library-card image-library-card-square"><img src="images/gallery/graphic_and_campaign_visuals/r_sz_2.png" alt="Graphic and Campaign Visuals gallery image 7" loading="lazy" width="512" height="768"></figure>
+                                            <figure class="image-library-card image-library-card-wide"><img src="images/gallery/graphic_and_campaign_visuals/sz_1.png" alt="Graphic and Campaign Visuals gallery image 8" loading="lazy" width="512" height="768"></figure>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <section class="image-enhancement-showcase" id="imageEnhancementShowcase" aria-label="Image enhancement comparison">
+                            <div class="image-enhancement-copy">
+                                <p class="image-library-panel-label">Enhancement A / B Comparison</p>
+                                <h2>Before and after reveal for cleanup, retouching, and final polish.</h2>
+                            </div>
+                            <div class="image-comparison" data-image-comparison style="--comparison-position: 54%;">
+                                <div class="image-comparison-base">
+                                    <img src="images/gallery/cinematic/1a.png" alt="Base image version for enhancement comparison" loading="lazy" width="5504" height="3072">
+                                    <span class="image-comparison-label image-comparison-label-before">A</span>
+                                </div>
+                                <div class="image-comparison-overlay">
+                                    <img src="images/gallery/cinematic/1b.png" alt="Enhanced image version for enhancement comparison" loading="lazy" width="5504" height="3072">
+                                    <span class="image-comparison-label image-comparison-label-after">B</span>
+                                </div>
+                                <div class="image-comparison-divider" aria-hidden="true">
+                                    <span class="image-comparison-handle"></span>
+                                </div>
+                            </div>
+                            <div class="image-comparison-options" aria-label="Choose comparison set">
+                                <button class="image-comparison-option is-active" type="button"
+                                    aria-label="Comparison set 01"
+                                    data-image-comparison-option
+                                    data-before-src="images/gallery/cinematic/1a.png"
+                                    data-before-alt="Base image version for enhancement comparison"
+                                    data-after-src="images/gallery/cinematic/1b.png"
+                                    data-after-alt="Enhanced image version for enhancement comparison">
+                                    <img src="images/gallery/cinematic/1a.png" alt="" aria-hidden="true" loading="lazy" width="5504" height="3072">
+                                </button>
+                                <button class="image-comparison-option" type="button"
+                                    aria-label="Comparison set 02"
+                                    data-image-comparison-option
+                                    data-before-src="images/gallery/cinematic/3a.png"
+                                    data-before-alt="Base image version for enhancement comparison set 2"
+                                    data-after-src="images/gallery/cinematic/3b.png"
+                                    data-after-alt="Enhanced image version for enhancement comparison set 2">
+                                    <img src="images/gallery/cinematic/3a.png" alt="" aria-hidden="true" loading="lazy" width="5504" height="3072">
+                                </button>
+                                <button class="image-comparison-option" type="button"
+                                    aria-label="Comparison set 03"
+                                    data-image-comparison-option
+                                    data-before-src="images/gallery/cinematic/hf_20260320_205816_1f6cbf58-48c8-4d34-af16-dcfb802029b4.png"
+                                    data-before-alt="Base image version for enhancement comparison set 3"
+                                    data-after-src="images/gallery/cinematic/hf_20260320_210007_769abae0-7828-4fd3-8699-a539ba2e6820.jpeg"
+                                    data-after-alt="Enhanced image version for enhancement comparison set 3">
+                                    <img src="images/gallery/cinematic/hf_20260320_205816_1f6cbf58-48c8-4d34-af16-dcfb802029b4.png" alt="" aria-hidden="true" loading="lazy" width="2752" height="1536">
+                                </button>
+                                <button class="image-comparison-option" type="button"
+                                    aria-label="Comparison set 04"
+                                    data-image-comparison-option
+                                    data-before-src="images/gallery/cinematic/hf_20260320_210421_6fe9be37-8d4d-4c4d-ae69-fd46119f5162.png"
+                                    data-before-alt="Base image version for enhancement comparison set 4"
+                                    data-after-src="images/gallery/cinematic/hf_20260320_210612_51817d6d-f8f1-45ab-adc2-b775e7162514.png"
+                                    data-after-alt="Enhanced image version for enhancement comparison set 4">
+                                    <img src="images/gallery/cinematic/hf_20260320_210421_6fe9be37-8d4d-4c4d-ae69-fd46119f5162.png" alt="" aria-hidden="true" loading="lazy" width="2752" height="1536">
+                                </button>
+                                <button class="image-comparison-option" type="button"
+                                    aria-label="Comparison set 05"
+                                    data-image-comparison-option
+                                    data-before-src="images/gallery/cinematic/hf_20260320_211533_d333a39c-557c-4a4f-be4c-32560c17e575.png"
+                                    data-before-alt="Base image version for enhancement comparison set 5"
+                                    data-after-src="images/gallery/cinematic/hf_20260320_211713_b5934563-fec1-44b7-a81b-ae317edda61f.png"
+                                    data-after-alt="Enhanced image version for enhancement comparison set 5">
+                                    <img src="images/gallery/cinematic/hf_20260320_211533_d333a39c-557c-4a4f-be4c-32560c17e575.png" alt="" aria-hidden="true" loading="lazy" width="2752" height="1536">
+                                </button>
+                                <button class="image-comparison-option" type="button"
+                                    aria-label="Comparison set 06"
+                                    data-image-comparison-option
+                                    data-before-src="images/gallery/cinematic/hf_20260320_212210_7ac3398c-eff0-4a53-bb86-7c6d3c62a983.png"
+                                    data-before-alt="Base image version for enhancement comparison set 6"
+                                    data-after-src="images/gallery/cinematic/hf_20260320_212216_f6b96fae-7a90-41ce-84aa-cab52b08ec91.png"
+                                    data-after-alt="Enhanced image version for enhancement comparison set 6">
+                                    <img src="images/gallery/cinematic/hf_20260320_212210_7ac3398c-eff0-4a53-bb86-7c6d3c62a983.png" alt="" aria-hidden="true" loading="lazy" width="2560" height="1440">
+                                </button>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+
+                <section id="about-images" class="image-library-anchor" aria-hidden="true"></section>
+            </div>
+            <div class="portfolio-page portfolio-page-comfy" data-portfolio-page="comfy" aria-hidden="true">
+                <section id="home-comfy" class="hero hero-images">
+                    <div class="container">
+                        <p class="portfolio-page-kicker">Custom ComfyUI Workflows &amp; Solutions</p>
+                        <h1>Node Graph Systems Built for Repeatable Creative Output</h1>
+                        <p>Designing robust ComfyUI pipelines for generation, enhancement, batching, iteration control, and production-ready automation.</p>
+                        <div class="image-showcase-grid">
+                            <article class="image-showcase-card image-showcase-card-feature">
+                                <div class="image-showcase-media" style="background-image: url('images/skill3.png');"></div>
+                                <div class="image-showcase-copy">
+                                    <p>Workflow Architecture</p>
+                                    <h3>Custom node graphs shaped around output quality, speed, and consistency.</h3>
+                                </div>
+                            </article>
+                            <article class="image-showcase-card image-showcase-card-process">
+                                <div class="image-showcase-copy image-showcase-copy-text">
+                                    <p>Built For</p>
+                                    <h3>Batch rendering, enhancement chains, reusable presets, and tailored pipeline logic.</h3>
+                                    <span>From concept passes to polished delivery workflows.</span>
+                                </div>
+                            </article>
+                            <article class="image-showcase-card image-showcase-card-process">
+                                <div class="image-showcase-copy image-showcase-copy-text">
+                                    <p>Outcome</p>
+                                    <h3>Less manual repetition, cleaner handoff, and more reliable creative scaling.</h3>
+                                    <span>Designed to support both experimentation and production work.</span>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="about-comfy" class="image-gallery-page">
+                    <div class="container">
+                        <h2>Workflow Highlights</h2>
+                        <p class="gallery-intro">A showcase page for custom ComfyUI systems, pipeline thinking, and automation-oriented creative tooling.</p>
+                        <div class="image-gallery-grid">
+                            <article class="image-gallery-card image-gallery-card-large">
+                                <div class="image-gallery-card-media" style="background-image: url('images/skill3.png');"></div>
+                                <div class="image-gallery-card-copy">
+                                    <p>System Design</p>
+                                    <h3>Purpose-built graph structures tailored to specific visual tasks.</h3>
+                                </div>
+                            </article>
+                            <article class="image-gallery-card">
+                                <div class="image-gallery-card-media" style="background-image: url('images/ex1.png');"></div>
+                                <div class="image-gallery-card-copy">
+                                    <p>Iteration</p>
+                                    <h3>Fast experimentation loops with reusable controls and checkpoints.</h3>
+                                </div>
+                            </article>
+                            <article class="image-gallery-card">
+                                <div class="image-gallery-card-media" style="background-image: url('images/ex2.png');"></div>
+                                <div class="image-gallery-card-copy">
+                                    <p>Automation</p>
+                                    <h3>Output pipelines organized for scale, consistency, and fewer manual steps.</h3>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2>My Skills</h2>
+            <div class="project-grid">
+                <div class="project-card skill-card skill-card-1 is-selected" data-portfolio-page-link="videos" role="button" tabindex="0" aria-pressed="true">
+                    <h3>AI Videos &amp; Animation</h3>
+                    <p>Crafting cinematic AI-generated video edits and animations that showcase storytelling and motion design.</p>
+                </div>
+                <div class="project-card skill-card skill-card-2" data-portfolio-page-link="images" role="button" tabindex="0" aria-pressed="false">
+                    <h3>Image Generation &amp; Enhancement</h3>
+                    <p>Creating and refining visuals using AI tools for high-quality renders, retouching, and stylistic enhancements.</p>
+                </div>
+                <div class="project-card skill-card skill-card-3" data-portfolio-page-link="comfy" role="button" tabindex="0" aria-pressed="false">
+                    <h3>Custom ComfyUI Workflows &amp; Solutions</h3>
+                    <p>Designing and building bespoke ComfyUI pipelines for scalable, automated creative workflows.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact skills-panel-section">
+        <div class="container skills-panel">
+            <p class="skills-panel-label">Skills</p>
+            <div class="skills-panel-grid">
+                <div class="skills-panel-group">
+                    <h2>Tools</h2>
+                    <div class="skill-chip-list">
+                        <span class="skill-chip">Adobe Premiere Pro</span>
+                        <span class="skill-chip">Adobe After Effects</span>
+                        <span class="skill-chip">Adobe Photoshop</span>
+                        <span class="skill-chip">Davinci Pro</span>
+                        <span class="skill-chip">Krita</span>
+                        <span class="skill-chip">ComfyUI</span>
+                    </div>
+                </div>
+                <div class="skills-panel-group">
+                    <h2>AI Solutions</h2>
+                    <div class="skill-chip-list">
+                        <span class="skill-chip">Vidu</span>
+                        <span class="skill-chip">Kling</span>
+                        <span class="skill-chip">Midjourney</span>
+                        <span class="skill-chip">Stable Diffusion</span>
+                        <span class="skill-chip">Nano Banana Pro</span>
+                        <span class="skill-chip">Seedream</span>
+                        <span class="skill-chip">Sora</span>
+                        <span class="skill-chip">Veo</span>
+                        <span class="skill-chip">OpenAI</span>
+                        <span class="skill-chip">Perplexity</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 BenZs. All rights reserved.</p>
+    </footer>
+    </div>
+
+
+    <div class="contact-widget" id="contactWidget">
+        <button class="contact-widget-toggle" id="contactWidgetToggle" type="button" aria-label="Open contact window" aria-expanded="false" aria-controls="contactWidgetPanel">
+            <img class="contact-widget-icon" src="images/icons/chat.png" alt="" aria-hidden="true">
+        </button>
+        <div class="contact-widget-panel" id="contactWidgetPanel" aria-hidden="true">
+            <div class="contact-widget-header">
+                <div>
+                    <p class="contact-widget-eyebrow">Contact</p>
+                    <h3>Let's talk</h3>
+                </div>
+                <button class="contact-widget-close" id="contactWidgetClose" type="button" aria-label="Close contact window">&times;</button>
+            </div>
+            <p class="contact-widget-copy">Drop me a message and I'll get back to you soon.</p>
+            <form class="contact-form contact-widget-form">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <textarea placeholder="Your Message" rows="5" required></textarea>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

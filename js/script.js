@@ -249,7 +249,8 @@ function syncCustomCursor(event) {
     }
 
     customCursorElement.classList.add('is-visible');
-    customCursorElement.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0) scale(${customCursorElement.classList.contains('is-pressed') ? 0.84 : 1})`;
+    customCursorElement.style.left = `${event.clientX}px`;
+    customCursorElement.style.top = `${event.clientY}px`;
 }
 
 function hideCustomCursor() {
@@ -283,6 +284,7 @@ function syncNavbarThreshold() {
 
     const isAtTop = window.scrollY <= NAVBAR_TOP_IDLE_THRESHOLD || isImageLibraryShellPinned();
     navbarElement.classList.toggle('is-initial-state', isAtTop);
+    navbarElement.classList.toggle('is-collapsed', !isAtTop && !isNavbarScrollActive && !isNavbarHovered);
 }
 
 function scheduleNavbarBlurFade() {
@@ -293,7 +295,7 @@ function scheduleNavbarBlurFade() {
     navbarBlurTimeout = window.setTimeout(() => {
         isNavbarScrollActive = false;
         syncNavbarThreshold();
-    }, 500);
+    }, 240);
 }
 
 function updateFloatingNavbar() {
@@ -337,31 +339,11 @@ function toggleContactWidget() {
 }
 
 function clearMenuPreviewState() {
-    if (!menuOverlayNavElement) {
-        return;
-    }
-
-    Object.values(MENU_PREVIEW_CONFIG).forEach((config) => {
-        menuOverlayNavElement.classList.remove(config.activeClass);
-    });
+    return;
 }
 
 function setMenuPreview(previewKey, isActive) {
-    if (!menuOverlayNavElement) {
-        return;
-    }
-
-    const config = MENU_PREVIEW_CONFIG[previewKey];
-    if (!config) {
-        return;
-    }
-
-    if (isActive) {
-        clearMenuPreviewState();
-        menuOverlayNavElement.classList.add(config.activeClass);
-    } else {
-        menuOverlayNavElement.classList.remove(config.activeClass);
-    }
+    return;
 }
 
 function resetMenuOverlayAboutParallax() {
@@ -433,13 +415,7 @@ function updateMenuOverlayProximity(clientX, clientY) {
     const centerY = orbitRect.top + orbitRect.height / 2;
     const distance = Math.hypot(clientX - centerX, clientY - centerY);
 
-    if (distance <= 600) {
-        setMenuOverlayEngaged(true);
-        return;
-    }
-
-    clearMenuPreviewState();
-    setMenuOverlayEngaged(false);
+    setMenuOverlayEngaged(distance <= 600);
 }
 
 function updateMenuOverlayAboutParallax(event) {

@@ -1,4 +1,5 @@
 :root {
+    --navbar-height: 4.5rem;
     --shell-width: min(1600px, calc(100vw - 3rem));
     --shell-pad: clamp(1.2rem, 2vw, 2rem);
     --content-width: min(1180px, 100%);
@@ -130,18 +131,18 @@ a {
     pointer-events: none;
     z-index: 2800;
     opacity: 0;
-    transform: translate3d(0, 0, 0) scale(0.86);
-    transition: opacity 0.18s ease, transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    transform: scale(0.86);
+    transition: opacity 0.12s ease, border-color 0.12s ease, background 0.12s ease;
 }
 
 .custom-cursor.is-visible {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: scale(1);
 }
 
 .custom-cursor.is-pressed {
     background: rgba(255, 255, 255, 0.12);
-    transform: translate3d(0, 0, 0) scale(0.84);
+    transform: scale(0.84);
 }
 
 .focus-band {
@@ -168,7 +169,7 @@ a {
 
 .navbar {
     position: fixed;
-    top: 0.9rem;
+    top: 0;
     left: 50%;
     width: var(--shell-width);
     transform: translateX(-50%);
@@ -193,10 +194,19 @@ a {
     box-shadow: none;
 }
 
+.navbar.is-collapsed {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
 .logo {
     font-size: 2rem;
     font-weight: 800;
     letter-spacing: -0.05em;
+    transition: opacity 0.2s ease;
 }
 
 .navbar-subtitle {
@@ -207,6 +217,11 @@ a {
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--text-soft);
+    transition: opacity 0.2s ease;
+}
+
+.navbar.is-collapsed .navbar-subtitle {
+    opacity: 0;
 }
 
 .hamburger-menu {
@@ -336,15 +351,18 @@ a {
     height: 4.3rem;
     object-fit: contain;
     filter: brightness(0) invert(1);
-    transition: opacity var(--menu-fade-duration) ease, transform var(--menu-fade-duration) ease;
+    transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.menu-overlay-link:hover .menu-overlay-icon,
+.menu-overlay-link:focus-visible .menu-overlay-icon {
+    transform: scale(1.06);
 }
 
 .menu-video-preview-scaffold,
 .menu-image-preview-scaffold,
 .menu-comfy-preview-scaffold {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
+    display: none;
 }
 
 .menu-video-preview-hitarea,
@@ -546,59 +564,6 @@ a {
     top: calc(50% + 4.8rem);
 }
 
-.menu-overlay-nav.is-video-preview .menu-video-preview-hitarea,
-.menu-overlay-nav.is-image-preview .menu-image-preview-hitarea,
-.menu-overlay-nav.is-comfy-preview .menu-comfy-preview-hitarea {
-    pointer-events: auto;
-}
-
-.menu-overlay-nav.is-video-preview .menu-video-preview-line-vertical,
-.menu-overlay-nav.is-image-preview .menu-image-preview-line-vertical,
-.menu-overlay-nav.is-comfy-preview .menu-comfy-preview-line-vertical,
-.menu-overlay-nav.is-video-preview .menu-video-preview-line-horizontal,
-.menu-overlay-nav.is-image-preview .menu-image-preview-line-horizontal,
-.menu-overlay-nav.is-image-preview .menu-image-preview-line-horizontal-tail,
-.menu-overlay-nav.is-comfy-preview .menu-comfy-preview-line-horizontal {
-    opacity: 1;
-}
-
-.menu-overlay-nav.is-video-preview .menu-video-preview-line-vertical,
-.menu-overlay-nav.is-image-preview .menu-image-preview-line-vertical,
-.menu-overlay-nav.is-comfy-preview .menu-comfy-preview-line-vertical {
-    transition: opacity 0.01s linear, transform var(--menu-line-duration) ease;
-    transform: scaleY(1);
-}
-
-.menu-overlay-nav.is-video-preview .menu-video-preview-line-horizontal,
-.menu-overlay-nav.is-image-preview .menu-image-preview-line-horizontal,
-.menu-overlay-nav.is-comfy-preview .menu-comfy-preview-line-horizontal,
-.menu-overlay-nav.is-image-preview .menu-image-preview-line-horizontal-tail {
-    transition: opacity 0.01s linear var(--menu-line-duration), transform var(--menu-line-duration) ease var(--menu-line-duration);
-    transform: scaleX(1);
-}
-
-.menu-overlay-nav.is-video-preview .menu-video-preview-node-dot,
-.menu-overlay-nav.is-image-preview .menu-image-preview-node-dot,
-.menu-overlay-nav.is-comfy-preview .menu-comfy-preview-node-dot,
-.menu-overlay-nav.is-video-preview .menu-video-preview-card,
-.menu-overlay-nav.is-image-preview .menu-image-preview-card,
-.menu-overlay-nav.is-comfy-preview .menu-comfy-preview-card,
-.menu-overlay-nav.is-video-preview .menu-overlay-link-videos .menu-overlay-icon,
-.menu-overlay-nav.is-image-preview .menu-overlay-link-images .menu-overlay-icon,
-.menu-overlay-nav.is-comfy-preview .menu-overlay-link-comfy .menu-overlay-icon,
-.menu-overlay-nav.is-video-preview .menu-video-preview-card-header .menu-preview-card-header-icon,
-.menu-overlay-nav.is-image-preview .menu-image-preview-card-header .menu-preview-card-header-icon,
-.menu-overlay-nav.is-comfy-preview .menu-comfy-preview-card-header .menu-preview-card-header-icon {
-    opacity: 1;
-}
-
-.menu-overlay-nav.is-video-preview .menu-overlay-link-videos .menu-overlay-icon,
-.menu-overlay-nav.is-image-preview .menu-overlay-link-images .menu-overlay-icon,
-.menu-overlay-nav.is-comfy-preview .menu-overlay-link-comfy .menu-overlay-icon {
-    transform: scale(0.72);
-    transform-origin: left top;
-}
-
 .menu-overlay-about-link {
     display: inline-flex;
     align-items: center;
@@ -695,7 +660,7 @@ a {
 .site-glass-shell {
     position: relative;
     width: var(--shell-width);
-    margin: 5.3rem auto 0;
+    margin: calc(var(--navbar-height) + 2rem) auto var(--navbar-height);
     padding: var(--shell-pad);
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: var(--glass);

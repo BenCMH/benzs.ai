@@ -269,6 +269,8 @@
                                     <div class="image-library-nav-group image-library-nav-group-enhancement">
                                         <p class="image-library-nav-group-label">[ Enhancement &amp; Restoration ]</p>
                                         <button class="image-library-nav-button image-library-nav-button-enhancement" type="button" data-image-section-target="enhancement">Before &amp; After Reveal</button>
+                                        <button class="image-library-nav-button image-library-nav-button-enhancement" type="button" data-image-section-target="restylize">Image To Motion Restylize</button>
+                                        <button class="image-library-nav-button image-library-nav-button-enhancement" type="button" data-image-section-target="restoration">Restoration Reveal</button>
                                     </div>
                                 </nav>
                             </aside>
@@ -584,6 +586,87 @@
                                 </button>
                             </div>
                         </section>
+                        <section class="image-restylize-showcase" id="imageRestylizeShowcase" aria-label="Image to motion restylize showcase">
+                            <div class="image-restylize-copy">
+                                <p class="image-library-panel-label">Image To Motion Restylize</p>
+                                <h2>Starting from a single still, I can turn the same subject into multiple visual directions and moving styles.</h2>
+                            </div>
+                            <div class="image-restylize-grid">
+                                <article class="image-restylize-pair">
+                                    <div class="image-restylize-card image-restylize-card-still">
+                                        <p class="image-restylize-card-label">Base Portrait</p>
+                                        <img src="media/images/restylize/man.png" alt="Base portrait of a man for restylize showcase" loading="lazy">
+                                    </div>
+                                    <div class="image-restylize-card image-restylize-card-motion">
+                                        <p class="image-restylize-card-label">Motion Variations</p>
+                                        <video width="100%" height="auto" preload="metadata" autoplay muted loop playsinline>
+                                            <source src="media/images/restylize/man_transition.mp4" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                </article>
+                                <article class="image-restylize-pair">
+                                    <div class="image-restylize-card image-restylize-card-still">
+                                        <p class="image-restylize-card-label">Base Portrait</p>
+                                        <img src="media/images/restylize/woman.png" alt="Base portrait of a woman for restylize showcase" loading="lazy">
+                                    </div>
+                                    <div class="image-restylize-card image-restylize-card-motion">
+                                        <p class="image-restylize-card-label">Motion Variations</p>
+                                        <video width="100%" height="auto" preload="metadata" autoplay muted loop playsinline>
+                                            <source src="media/images/restylize/woman_transition.mp4" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                </article>
+                            </div>
+                        </section>
+                        <section class="image-restoration-showcase" id="imageRestorationShowcase" aria-label="Restoration reveal showcase">
+                            <div class="image-restoration-copy">
+                                <p class="image-library-panel-label">Restoration Reveal</p>
+                                <h2>Compare damaged or rough source material against the restored result with a direct opacity reveal.</h2>
+                            </div>
+                            <div class="image-restoration-layout">
+                                <div class="image-restoration-compare-column">
+                                    <div class="image-restoration-compare" data-restoration-compare style="--restoration-opacity: 0;">
+                                        <img class="image-restoration-base" src="media/images/restoration/1.png" alt="Original image for restoration comparison" loading="lazy">
+                                        <img class="image-restoration-overlay" src="media/images/restoration/1_match.png" alt="Restored image result for restoration comparison" loading="lazy">
+                                    </div>
+                                    <div class="image-restoration-slider-wrap">
+                                        <label class="image-restoration-slider-label" for="imageRestorationSlider">Reveal Restoration</label>
+                                        <input class="image-restoration-slider" id="imageRestorationSlider" type="range" min="0" max="100" value="0" data-restoration-slider aria-label="Adjust restoration image opacity">
+                                    </div>
+                                </div>
+                                <div class="image-restoration-options" aria-label="Choose restoration set">
+                                    <button class="image-restoration-option is-active" type="button"
+                                        data-restoration-option
+                                        data-before-src="media/images/restoration/1.png"
+                                        data-before-alt="Original image 1 for restoration comparison"
+                                        data-after-src="media/images/restoration/1_match.png"
+                                        data-after-alt="Restored image 1 for restoration comparison"
+                                        aria-label="Restoration set 1">
+                                        <img src="media/images/restoration/1.png" alt="" aria-hidden="true" loading="lazy">
+                                    </button>
+                                    <button class="image-restoration-option" type="button"
+                                        data-restoration-option
+                                        data-before-src="media/images/restoration/2.png"
+                                        data-before-alt="Original image 2 for restoration comparison"
+                                        data-after-src="media/images/restoration/2_match.png"
+                                        data-after-alt="Restored image 2 for restoration comparison"
+                                        aria-label="Restoration set 2">
+                                        <img src="media/images/restoration/2.png" alt="" aria-hidden="true" loading="lazy">
+                                    </button>
+                                    <button class="image-restoration-option" type="button"
+                                        data-restoration-option
+                                        data-before-src="media/images/restoration/3.png"
+                                        data-before-alt="Original image 3 for restoration comparison"
+                                        data-after-src="media/images/restoration/3_match.png"
+                                        data-after-alt="Restored image 3 for restoration comparison"
+                                        aria-label="Restoration set 3">
+                                        <img src="media/images/restoration/3.png" alt="" aria-hidden="true" loading="lazy">
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </section>
 
@@ -593,59 +676,90 @@
                 <section id="home-comfy" class="hero hero-images">
                     <div class="container">
                         <p class="portfolio-page-kicker">Custom ComfyUI Workflows &amp; Solutions</p>
-                        <h1>Node Graph Systems Built for Repeatable Creative Output</h1>
-                        <p>Designing robust ComfyUI pipelines for generation, enhancement, batching, iteration control, and production-ready automation.</p>
-                        <div class="image-showcase-grid">
-                            <article class="image-showcase-card image-showcase-card-feature">
-                                <div class="image-showcase-media" style="background-image: url('images/skill3.png');"></div>
-                                <div class="image-showcase-copy">
-                                    <p>Workflow Architecture</p>
-                                    <h3>Custom node graphs shaped around output quality, speed, and consistency.</h3>
-                                </div>
-                            </article>
-                            <article class="image-showcase-card image-showcase-card-process">
-                                <div class="image-showcase-copy image-showcase-copy-text">
-                                    <p>Built For</p>
-                                    <h3>Batch rendering, enhancement chains, reusable presets, and tailored pipeline logic.</h3>
-                                    <span>From concept passes to polished delivery workflows.</span>
-                                </div>
-                            </article>
-                            <article class="image-showcase-card image-showcase-card-process">
-                                <div class="image-showcase-copy image-showcase-copy-text">
-                                    <p>Outcome</p>
-                                    <h3>Less manual repetition, cleaner handoff, and more reliable creative scaling.</h3>
-                                    <span>Designed to support both experimentation and production work.</span>
-                                </div>
-                            </article>
+                        <h1>ComfyUI systems designed for repeatable output, cleaner pipelines, and production-ready control.</h1>
+                        <p>From character consistency and automation to custom workflow engineering, I build node-based systems that make high-volume creative work more reliable and easier to scale.</p>
+                        <div class="comfy-hero-strip" aria-label="ComfyUI solution areas">
+                            <span class="comfy-hero-chip">Consistent Characters</span>
+                            <span class="comfy-hero-chip">Automation</span>
+                            <span class="comfy-hero-chip">3D Models</span>
+                            <span class="comfy-hero-chip">Runpod Setup</span>
+                            <span class="comfy-hero-chip">Custom Workflows</span>
                         </div>
                     </div>
                 </section>
 
-                <section id="about-comfy" class="image-gallery-page">
+                <section id="about-comfy" class="comfy-solutions-page">
                     <div class="container">
-                        <h2>Workflow Highlights</h2>
-                        <p class="gallery-intro">A showcase page for custom ComfyUI systems, pipeline thinking, and automation-oriented creative tooling.</p>
-                        <div class="image-gallery-grid">
-                            <article class="image-gallery-card image-gallery-card-large">
-                                <div class="image-gallery-card-media" style="background-image: url('images/skill3.png');"></div>
-                                <div class="image-gallery-card-copy">
-                                    <p>System Design</p>
-                                    <h3>Purpose-built graph structures tailored to specific visual tasks.</h3>
+                        <div class="comfy-solutions-intro">
+                            <p class="gallery-intro">Five focused solution areas for creators and teams who want ComfyUI to do more than just generate images.</p>
+                        </div>
+                        <div class="comfy-solutions-grid">
+                            <article class="comfy-solution-card comfy-solution-card-training">
+                                <div class="comfy-solution-badge">01</div>
+                                <p class="comfy-solution-kicker">Consistent Characters &amp; Model Training</p>
+                                <h3>Starting from a reference face, I can build a character system that becomes reusable across sheets, looks, and motion-ready outputs.</h3>
+                                <div class="comfy-training-flow" aria-label="Model training showcase">
+                                    <div class="comfy-training-stage comfy-training-stage-reference">
+                                        <p class="comfy-training-label">Reference Face</p>
+                                        <img src="media/images/model training/reference.png" alt="Reference portrait used for character model training" loading="lazy">
+                                    </div>
+                                    <div class="comfy-training-stage comfy-training-stage-sheet">
+                                        <p class="comfy-training-label">Character Sheet</p>
+                                        <img src="media/images/model training/Character sheet.png" alt="Character sheet generated from the trained identity" loading="lazy">
+                                    </div>
+                                    <div class="comfy-training-stage comfy-training-stage-result">
+                                        <p class="comfy-training-label">Result Video</p>
+                                        <video width="100%" height="auto" preload="metadata" autoplay muted loop playsinline>
+                                            <source src="media/images/model training/result_vid.mp4" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
                                 </div>
+                                <ul class="comfy-solution-list">
+                                    <li>Identity-safe training support for likeness, style retention, and long-term reuse</li>
+                                    <li>Character sheets and turnarounds that help keep generations coherent</li>
+                                    <li>Outputs built for repeatability across stills, sequences, and future workflow expansion</li>
+                                </ul>
                             </article>
-                            <article class="image-gallery-card">
-                                <div class="image-gallery-card-media" style="background-image: url('images/ex1.png');"></div>
-                                <div class="image-gallery-card-copy">
-                                    <p>Iteration</p>
-                                    <h3>Fast experimentation loops with reusable controls and checkpoints.</h3>
-                                </div>
+                            <article class="comfy-solution-card">
+                                <div class="comfy-solution-badge">02</div>
+                                <p class="comfy-solution-kicker">Content Generation Automation</p>
+                                <h3>Batchable, scalable systems for recurring output instead of one-off manual generation.</h3>
+                                <ul class="comfy-solution-list">
+                                    <li>Template-driven pipelines for campaigns, social sets, and product variations</li>
+                                    <li>Folder-aware jobs, prompt switching, and hands-off output routing</li>
+                                    <li>Reliable node logic for repeatable renders at volume</li>
+                                </ul>
                             </article>
-                            <article class="image-gallery-card">
-                                <div class="image-gallery-card-media" style="background-image: url('images/ex2.png');"></div>
-                                <div class="image-gallery-card-copy">
-                                    <p>Automation</p>
-                                    <h3>Output pipelines organized for scale, consistency, and fewer manual steps.</h3>
-                                </div>
+                            <article class="comfy-solution-card">
+                                <div class="comfy-solution-badge">03</div>
+                                <p class="comfy-solution-kicker">3D Models</p>
+                                <h3>Workflows that bridge 2D generation and 3D-ready assets for visualization and concept work.</h3>
+                                <ul class="comfy-solution-list">
+                                    <li>Image-to-3D preparation and cleanup-aware pipeline steps</li>
+                                    <li>Multi-view consistency support for object and character exploration</li>
+                                    <li>Visual development systems built to feed broader 3D pipelines</li>
+                                </ul>
+                            </article>
+                            <article class="comfy-solution-card">
+                                <div class="comfy-solution-badge">04</div>
+                                <p class="comfy-solution-kicker">Runpod Configuration</p>
+                                <h3>Cloud-ready ComfyUI environments tuned for stability, speed, and practical daily use.</h3>
+                                <ul class="comfy-solution-list">
+                                    <li>Runpod deployment, dependency setup, and storage planning</li>
+                                    <li>Model organization, boot flow cleanup, and environment hardening</li>
+                                    <li>Remote workstation setups that are easier to maintain and reuse</li>
+                                </ul>
+                            </article>
+                            <article class="comfy-solution-card">
+                                <div class="comfy-solution-badge">05</div>
+                                <p class="comfy-solution-kicker">Custom Workflows</p>
+                                <h3>Purpose-built node graphs shaped around your exact task, whether that’s enhancement, generation, stylization, or hybrid creative automation.</h3>
+                                <ul class="comfy-solution-list">
+                                    <li>Clean graph architecture that stays readable as the project grows</li>
+                                    <li>Reusable controls for teams, clients, or repeated production scenarios</li>
+                                    <li>Workflow logic built around actual outcomes, not generic template chains</li>
+                                </ul>
                             </article>
                         </div>
                     </div>
@@ -715,7 +829,7 @@
 
     <div class="contact-widget" id="contactWidget">
         <button class="contact-widget-toggle" id="contactWidgetToggle" type="button" aria-label="Open contact window" aria-expanded="false" aria-controls="contactWidgetPanel">
-            <img class="contact-widget-icon" src="images/icons/chat.png" alt="" aria-hidden="true">
+            <img class="contact-widget-icon" src="media/images/icons/email.png" alt="" aria-hidden="true">
         </button>
         <div class="contact-widget-panel" id="contactWidgetPanel" aria-hidden="true">
             <div class="contact-widget-header">

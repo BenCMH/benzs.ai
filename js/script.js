@@ -67,6 +67,7 @@ let imageCategoryPanels = [];
 let imageSectionButtons = [];
 let imageComparisonElements = [];
 let imageComparisonOptionButtons = [];
+let imageRestorationOptionButtons = [];
 let imageLibraryPinViewportTop = null;
 let imageLibraryPinnedScrollFrame = null;
 let imageLibraryContinuousPanelElement = null;
@@ -1128,6 +1129,66 @@ function setImageComparisonOption(button) {
     }, 120);
 }
 
+function setImageRestorationOpacity(value) {
+    const compare = document.querySelector('[data-restoration-compare]');
+    if (!(compare instanceof HTMLElement)) {
+        return;
+    }
+
+    const normalized = Math.min(100, Math.max(0, Number(value) || 0)) / 100;
+    compare.style.setProperty('--restoration-opacity', normalized.toFixed(2));
+}
+
+function syncImageRestorationOptionHeight() {
+    const compare = document.querySelector('[data-restoration-compare]');
+    const options = document.querySelector('.image-restoration-options');
+    if (!(compare instanceof HTMLElement) || !(options instanceof HTMLElement)) {
+        return;
+    }
+
+    options.style.setProperty('--restoration-option-height', `${compare.clientHeight}px`);
+}
+
+function setImageRestorationOption(button) {
+    if (!(button instanceof HTMLElement)) {
+        return;
+    }
+
+    const compare = document.querySelector('[data-restoration-compare]');
+    const baseImage = compare?.querySelector('.image-restoration-base');
+    const overlayImage = compare?.querySelector('.image-restoration-overlay');
+    const slider = document.querySelector('[data-restoration-slider]');
+
+    if (!(compare instanceof HTMLElement) || !(baseImage instanceof HTMLImageElement) || !(overlayImage instanceof HTMLImageElement)) {
+        return;
+    }
+
+    const beforeSrc = button.getAttribute('data-before-src');
+    const beforeAlt = button.getAttribute('data-before-alt') || 'Original image for restoration comparison';
+    const afterSrc = button.getAttribute('data-after-src');
+    const afterAlt = button.getAttribute('data-after-alt') || 'Restored image for restoration comparison';
+
+    if (!beforeSrc || !afterSrc) {
+        return;
+    }
+
+    imageRestorationOptionButtons.forEach((option) => {
+        option.classList.toggle('is-active', option === button);
+    });
+
+    baseImage.src = beforeSrc;
+    baseImage.alt = beforeAlt;
+    overlayImage.src = afterSrc;
+    overlayImage.alt = afterAlt;
+
+    if (slider instanceof HTMLInputElement) {
+        slider.value = '0';
+    }
+
+    setImageRestorationOpacity(0);
+    syncImageRestorationOptionHeight();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     siteLoaderElement = document.getElementById('siteLoader');
     navbarElement = document.querySelector('.navbar');
@@ -1157,6 +1218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     imageCategoryPanels = Array.from(document.querySelectorAll('[data-gallery-category]'));
     imageComparisonElements = Array.from(document.querySelectorAll('[data-image-comparison]'));
     imageComparisonOptionButtons = Array.from(document.querySelectorAll('[data-image-comparison-option]'));
+    imageRestorationOptionButtons = Array.from(document.querySelectorAll('[data-restoration-option]'));
     carouselItems = Array.from(document.querySelectorAll('.carousel-item'));
     carouselVideos = Array.from(document.querySelectorAll('.carousel-item video'));
     galleryVideos = Array.from(document.querySelectorAll('.gallery-media video'));
@@ -1168,6 +1230,7 @@ document.addEventListener('DOMContentLoaded', () => {
     buildContinuousImageLibrary();
     applyImageGalleryCategoryState(activeImageGalleryCategory);
     initImageComparisons();
+    syncImageRestorationOptionHeight();
     updatePortfolioSubtitle();
     updatePortfolioPageLinks();
 
@@ -1286,13 +1349,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     imageSectionButtons.forEach((button) => {
         button.addEventListener('click', () => {
-            document.getElementById('imageEnhancementShowcase')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const targetKey = button.getAttribute('data-image-section-target');
+            const targetId = targetKey === 'restylize'
+                ? 'imageRestylizeShowcase'
+                : targetKey === 'restoration'
+                    ? 'imageRestorationShowcase'
+                    : 'imageEnhancementShowcase';
+            document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     });
 
     imageComparisonOptionButtons.forEach((button) => {
         button.addEventListener('click', () => setImageComparisonOption(button));
     });
+
+    imageRestorationOptionButtons.forEach((button) => {
+        button.addEventListener('click', () => setImageRestorationOption(button));
+    });
+
+    const restorationSlider = document.querySelector('[data-restoration-slider]');
+    if (restorationSlider instanceof HTMLInputElement) {
+        restorationSlider.addEventListener('input', (event) => {
+            setImageRestorationOpacity(event.target.value);
+        });
+    }
+
+    window.addEventListener('resize', syncImageRestorationOptionHeight);
 
     document.querySelectorAll('.image-library-card img').forEach((image) => {
         image.setAttribute('tabindex', '0');

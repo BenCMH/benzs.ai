@@ -24,11 +24,11 @@ let smoothScrollTargetY = null;
 let smoothScrollFrame = null;
 let smoothScrollEnabled = false;
 let pendingPortfolioPageSwitch = null;
-const SMOOTH_SCROLL_TOP_SNAP = 16;
-const SMOOTH_SCROLL_BOTTOM_SNAP = 16;
+const SMOOTH_SCROLL_TOP_SNAP = 2;
+const SMOOTH_SCROLL_BOTTOM_SNAP = 2;
 const SMOOTH_SCROLL_EDGE_ZONE = 42;
 const PORTFOLIO_PAGE_SWITCH_TOP_THRESHOLD = 18;
-const NAVBAR_TOP_IDLE_THRESHOLD = SMOOTH_SCROLL_TOP_SNAP;
+const NAVBAR_TOP_IDLE_THRESHOLD = 16;
 const MUTE_ICON_SRC = 'media/images/icons/mute.png';
 const VOLUME_ICON_SRC = 'media/images/icons/volume-on.png';
 
@@ -192,7 +192,7 @@ function stepSmoothScroll() {
     const distanceToBottom = Math.max(0, maxScroll - scrollRoot.scrollTop);
     const isNearEdge = distanceToTop <= SMOOTH_SCROLL_EDGE_ZONE || distanceToBottom <= SMOOTH_SCROLL_EDGE_ZONE;
     const easing = isNearEdge ? 0.04 : 0.052;
-    const minStep = isNearEdge ? 0.18 : 0.12;
+    const minStep = isNearEdge ? 0.04 : 0.12;
     const delta = targetDelta * easing;
 
     if (Math.abs(delta) < minStep) {

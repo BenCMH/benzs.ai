@@ -29,6 +29,8 @@ const SMOOTH_SCROLL_BOTTOM_SNAP = 3;
 const SMOOTH_SCROLL_EDGE_ZONE = 42;
 const PORTFOLIO_PAGE_SWITCH_TOP_THRESHOLD = 18;
 const NAVBAR_TOP_IDLE_THRESHOLD = 48;
+const MUTE_ICON_SRC = 'media/images/icons/mute.png';
+const VOLUME_ICON_SRC = 'media/images/icons/volume-on.png';
 
 let carouselItems = [];
 let carouselVideos = [];
@@ -722,10 +724,26 @@ function moveCarousel(direction) {
     updateCarousel();
 }
 
+function syncMuteButtonState() {
+    const muteBtn = document.getElementById('muteBtn');
+    const muteIcon = muteBtn?.querySelector('.mute-btn-icon');
+    const isSoundOn = !isMuted && currentVolume > 0;
+
+    muteBtn?.setAttribute('aria-pressed', String(isMuted));
+    muteBtn?.setAttribute('aria-label', isSoundOn ? 'Mute sound' : 'Unmute sound');
+
+    if (muteIcon instanceof HTMLImageElement) {
+        muteIcon.src = isSoundOn ? VOLUME_ICON_SRC : MUTE_ICON_SRC;
+    }
+}
+
 function toggleMute() {
     isMuted = !isMuted;
     if (!isMuted && currentVolume <= 0) {
         currentVolume = lastVolume || 0.72;
+        if (volumeSliderElement) {
+            volumeSliderElement.value = String(Math.round(currentVolume * 100));
+        }
     }
 
     carouselVideos.forEach((video) => {
@@ -733,8 +751,7 @@ function toggleMute() {
         video.volume = isMuted ? 0 : currentVolume;
     });
 
-    const muteBtn = document.getElementById('muteBtn');
-    muteBtn?.setAttribute('aria-pressed', String(!isMuted));
+    syncMuteButtonState();
 }
 
 window.moveCarousel = moveCarousel;
@@ -1350,7 +1367,10 @@ document.addEventListener('DOMContentLoaded', () => {
         lastVolume = value > 0 ? value : lastVolume;
         isMuted = value <= 0;
         playCurrentCarouselVideo();
+        syncMuteButtonState();
     });
+
+    syncMuteButtonState();
 
     if (customCursorElement && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
         document.addEventListener('mousemove', syncCustomCursor, { passive: true });

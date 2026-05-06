@@ -90,7 +90,7 @@
             </button>
             <section class="menu-overlay-about-panel" id="menuOverlayAboutPanel" aria-hidden="true">
                 <div class="menu-overlay-about-image-frame" aria-hidden="true">
-                    <img class="menu-overlay-about-image" src="images/profile.jpg" alt="Portrait of BenZs" draggable="false">
+                    <img class="menu-overlay-about-image" src="media/images/about/profile.jpg" alt="Portrait of BenZs" width="5152" height="7728" draggable="false">
                 </div>
                 <p class="menu-overlay-about-kicker">About Me</p>
                 <p class="menu-overlay-about-copy">I build AI-native creative work across motion, still imagery, and custom workflow systems, blending visual storytelling with practical automation for polished, repeatable output.</p>
@@ -147,7 +147,7 @@
                 <div class="carousel-controls"> 
                     <button class="carousel-btn prev" type="button" onclick="moveCarousel(-1)">&#10094;</button>
                     <div class="volume-control" id="volumeControl">
-                        <button class="carousel-btn mute" type="button" id="muteBtn" onclick="toggleMute()" aria-label="Toggle sound" aria-pressed="true"><img class="mute-btn-icon" src="images/icons/mute.png" alt="" aria-hidden="true"></button>
+                        <button class="carousel-btn mute" type="button" id="muteBtn" onclick="toggleMute()" aria-label="Toggle sound" aria-pressed="false"><img class="mute-btn-icon" src="media/images/icons/mute.png" alt="" aria-hidden="true"></button>
                         <div class="volume-slider-wrap">
                             <input class="volume-slider" id="volumeSlider" type="range" min="0" max="100" value="72" aria-label="Video volume">
                         </div>
@@ -654,40 +654,86 @@
                                     <li>Outputs built for repeatability across stills, sequences, and future workflow expansion</li>
                                 </ul>
                             </article>
-                            <article class="comfy-solution-card">
+                            <article class="comfy-solution-card comfy-solution-card-content-gen">
                                 <div class="comfy-solution-badge">02</div>
                                 <p class="comfy-solution-kicker">Content Generation Automation</p>
                                 <h3>Batchable, scalable systems for recurring output instead of one-off manual generation.</h3>
+                                <div class="comfy-content-gen-showcase" aria-label="Content generation automation workflow showcase">
+                                    <p class="comfy-training-label">Automation Workflow</p>
+                                    <img src="media/images/content gen automation/content-gen.png" alt="Content generation automation workflow preview" loading="lazy" width="2294" height="964">
+                                </div>
                                 <ul class="comfy-solution-list">
                                     <li>Template-driven pipelines for campaigns, social sets, and product variations</li>
                                     <li>Folder-aware jobs, prompt switching, and hands-off output routing</li>
                                     <li>Reliable node logic for repeatable renders at volume</li>
                                 </ul>
                             </article>
-                            <article class="comfy-solution-card">
+                            <article class="comfy-solution-card comfy-solution-card-3d">
                                 <div class="comfy-solution-badge">03</div>
                                 <p class="comfy-solution-kicker">3D Models</p>
-                                <h3>Workflows that bridge 2D generation and 3D-ready assets for visualization and concept work.</h3>
+                                <h3>From a 2D character sheet to a usable 3D model preview, with the ComfyUI workflow and final output shown end to end.</h3>
+                                <div class="comfy-3d-flow" aria-label="2D to 3D model workflow showcase">
+                                    <div class="comfy-3d-stage comfy-3d-stage-sheet">
+                                        <p class="comfy-training-label">Character Sheet</p>
+                                        <img src="media/images/2D to 3D/ch_sheet.png" alt="Character sheet used for the 2D to 3D model process" loading="lazy" width="2752" height="1536">
+                                    </div>
+                                    <div class="comfy-3d-stage comfy-3d-stage-angle">
+                                        <p class="comfy-training-label">Model Front</p>
+                                        <img src="media/images/2D to 3D/ch_front.png" alt="Front angle of the generated character model" loading="lazy" width="2048" height="2048">
+                                    </div>
+                                    <div class="comfy-3d-stage comfy-3d-stage-angle">
+                                        <p class="comfy-training-label">Model Back</p>
+                                        <img src="media/images/2D to 3D/ch_back.png" alt="Back angle of the generated character model" loading="lazy" width="2048" height="2048">
+                                    </div>
+                                    <div class="comfy-3d-stage comfy-3d-stage-workflow">
+                                        <p class="comfy-training-label">Workflow Result</p>
+                                        <video width="100%" height="auto" preload="metadata" autoplay muted loop playsinline>
+                                            <source src="media/images/2D to 3D/comfyresult-3dmodel.mp4" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                    <div class="comfy-3d-stage comfy-3d-stage-output">
+                                        <p class="comfy-training-label">Final Output</p>
+                                        <video width="100%" height="auto" preload="metadata" autoplay muted loop playsinline>
+                                            <source src="media/images/2D to 3D/final_out.mp4" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                </div>
                                 <ul class="comfy-solution-list">
                                     <li>Image-to-3D preparation and cleanup-aware pipeline steps</li>
                                     <li>Multi-view consistency support for object and character exploration</li>
                                     <li>Visual development systems built to feed broader 3D pipelines</li>
                                 </ul>
                             </article>
-                            <article class="comfy-solution-card">
+                            <article class="comfy-solution-card comfy-solution-card-runpod">
                                 <div class="comfy-solution-badge">04</div>
                                 <p class="comfy-solution-kicker">Runpod Configuration</p>
                                 <h3>Cloud-ready ComfyUI environments tuned for stability, speed, and practical daily use.</h3>
+                                <div class="comfy-runpod-showcase" aria-label="Runpod configuration video showcase">
+                                    <p class="comfy-training-label">Configuration Preview</p>
+                                    <video width="100%" height="auto" preload="metadata" autoplay muted loop playsinline>
+                                        <source src="media/videos/runpod-configuration/runpod-showcase.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
                                 <ul class="comfy-solution-list">
                                     <li>Runpod deployment, dependency setup, and storage planning</li>
                                     <li>Model organization, boot flow cleanup, and environment hardening</li>
                                     <li>Remote workstation setups that are easier to maintain and reuse</li>
                                 </ul>
                             </article>
-                            <article class="comfy-solution-card">
+                            <article class="comfy-solution-card comfy-solution-card-custom-workflows">
                                 <div class="comfy-solution-badge">05</div>
                                 <p class="comfy-solution-kicker">Custom Workflows</p>
                                 <h3>Purpose-built node graphs shaped around your exact task, whether that’s enhancement, generation, stylization, or hybrid creative automation.</h3>
+                                <div class="comfy-custom-workflows-showcase" aria-label="Custom ComfyUI workflow video showcase">
+                                    <p class="comfy-training-label">Workflow Build</p>
+                                    <video width="100%" height="auto" preload="metadata" autoplay muted loop playsinline>
+                                        <source src="media/videos/custom-workflows/custom_workflow_vid.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
                                 <ul class="comfy-solution-list">
                                     <li>Clean graph architecture that stays readable as the project grows</li>
                                     <li>Reusable controls for teams, clients, or repeated production scenarios</li>

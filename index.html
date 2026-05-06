@@ -843,11 +843,15 @@
                 <button class="contact-widget-close" id="contactWidgetClose" type="button" aria-label="Close contact window">&times;</button>
             </div>
             <p class="contact-widget-copy">Drop me a message and I'll get back to you soon.</p>
-            <form class="contact-form contact-widget-form">
-                <input type="text" placeholder="Your Name" required>
-                <input type="email" placeholder="Your Email" required>
-                <textarea placeholder="Your Message" rows="5" required></textarea>
+            <form class="contact-form contact-widget-form" action="https://formsubmit.co/ajax/zsigmond.benedek97@gmail.com" method="POST">
+                <input type="hidden" name="_subject" value="New BenZs portfolio inquiry">
+                <input type="hidden" name="_template" value="table">
+                <input type="text" name="_honey" class="contact-form-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+                <input type="text" name="name" placeholder="Your Name" autocomplete="name" required>
+                <input type="email" name="email" placeholder="Your Email" autocomplete="email" required>
+                <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
                 <button type="submit" class="submit-btn">Send Message</button>
+                <p class="contact-form-status" aria-live="polite"></p>
             </form>
         </div>
     </div>

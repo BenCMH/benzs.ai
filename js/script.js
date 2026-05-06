@@ -358,6 +358,56 @@ function handleContactWidgetOutsideClick(event) {
     closeContactWidget();
 }
 
+function setContactFormStatus(form, message, state = '') {
+    const status = form.querySelector('.contact-form-status');
+    if (!(status instanceof HTMLElement)) {
+        return;
+    }
+
+    status.textContent = message;
+    status.classList.toggle('is-success', state === 'success');
+    status.classList.toggle('is-error', state === 'error');
+}
+
+async function submitContactForm(event) {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    if (!(form instanceof HTMLFormElement) || form.classList.contains('is-sending')) {
+        return;
+    }
+
+    const endpoint = form.getAttribute('action');
+    if (!endpoint) {
+        setContactFormStatus(form, 'The contact form is not configured yet.', 'error');
+        return;
+    }
+
+    form.classList.add('is-sending');
+    setContactFormStatus(form, 'Sending message...');
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: {
+                Accept: 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Contact form submission failed.');
+        }
+
+        form.reset();
+        setContactFormStatus(form, 'Message sent. I will get back to you soon.', 'success');
+    } catch {
+        setContactFormStatus(form, 'Something went wrong. Please try again or email me directly.', 'error');
+    } finally {
+        form.classList.remove('is-sending');
+    }
+}
+
 function clearMenuPreviewState() {
     return;
 }
@@ -740,6 +790,19 @@ function openCarouselItemVideo(item) {
     }
 }
 
+function getCarouselItemFromPoint(clientX, clientY) {
+    const element = document.elementFromPoint(clientX, clientY);
+    const directItem = element instanceof Element ? element.closest('.carousel-item') : null;
+    if (directItem) {
+        return directItem;
+    }
+
+    return carouselItems.find((item) => {
+        const rect = item.getBoundingClientRect();
+        return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+    }) || null;
+}
+
 function endCarouselDrag(pointerId = null) {
     if (!carouselContainerElement) {
         return;
@@ -804,7 +867,7 @@ function initCarouselDrag() {
             return;
         }
         const draggedEnoughToSuppressClick = suppressCarouselVideoClick;
-        const pointerTarget = event.target instanceof Element ? event.target.closest('.carousel-item') : null;
+        const pointerTarget = getCarouselItemFromPoint(event.clientX, event.clientY);
         endCarouselDrag(event.pointerId);
         if (!draggedEnoughToSuppressClick) {
             openCarouselItemVideo(pointerTarget);
@@ -1271,8 +1334,56 @@ function scrollImageGalleryToCategory(categoryKey) {
 
         const maxScroll = Math.max(0, scrollRoot.scrollHeight - window.innerHeight);
         const targetOffset = Math.max(0, Math.min(sequence.totalScrollLength, targetMetric.startOffset));
-        const nextTargetY = Math.max(0, Math.min(maxScroll, sequence.startScrollY + targetOffset));
+        const currentProgress = Math.max(0, window.scrollY - sequence.startScrollY);
+        const directionBias = targetOffset > currentProgress ? 24 : 0;
+        const nextTargetY = Math.max(0, Math.min(maxScroll, sequence.startScrollY + targetOffset + directionBias));
         smoothScrollTargetY = nextTargetY;
+        if (!smoothScrollFrame) {
+            smoothScrollFrame = window.requestAnimationFrame(stepSmoothScroll);
+        }
+    });
+}
+
+function getImageSectionTargetId(targetKey) {
+    if (targetKey === 'restylize') {
+        return 'imageRestylizeShowcase';
+    }
+
+    if (targetKey === 'restoration') {
+        return 'imageRestorationShowcase';
+    }
+
+    return 'imageEnhancementShowcase';
+}
+
+function scrollImagePageToSection(targetKey) {
+    const targetElement = document.getElementById(getImageSectionTargetId(targetKey));
+    const scrollRoot = document.scrollingElement || document.documentElement;
+
+    if (!targetElement || !scrollRoot) {
+        return;
+    }
+
+    if (activePortfolioPage !== 'images' || window.innerWidth <= 980) {
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+    }
+
+    syncPortfolioPagesHeight(false);
+    scheduleImageLibraryPinnedScrollSync();
+
+    window.requestAnimationFrame(() => {
+        const sequence = getImageLibrarySequenceMetrics();
+        const currentShellOffset = parseFloat(mouseTrailShellElement?.style.getPropertyValue('--image-shell-pin-offset')) || 0;
+        const targetNaturalTop = targetElement.getBoundingClientRect().top + window.scrollY - currentShellOffset;
+        const releaseScrollY = sequence ? sequence.startScrollY + sequence.totalScrollLength : 0;
+        const maxScroll = Math.max(0, scrollRoot.scrollHeight - window.innerHeight);
+        const nextTargetY = Math.max(
+            releaseScrollY,
+            targetNaturalTop + (sequence?.totalScrollLength || 0) - 96
+        );
+
+        smoothScrollTargetY = Math.max(0, Math.min(maxScroll, nextTargetY));
         if (!smoothScrollFrame) {
             smoothScrollFrame = window.requestAnimationFrame(stepSmoothScroll);
         }
@@ -1548,11 +1659,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', handleContactWidgetOutsideClick);
 
     document.querySelectorAll('.contact-form').forEach((contactForm) => {
-        contactForm.addEventListener('submit', (event) => {
-            event.preventDefault();
-            contactForm.reset();
-            closeContactWidget();
-        });
+        contactForm.addEventListener('submit', submitContactForm);
     });
 
     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
@@ -1594,12 +1701,7 @@ document.addEventListener('DOMContentLoaded', () => {
     imageSectionButtons.forEach((button) => {
         button.addEventListener('click', () => {
             const targetKey = button.getAttribute('data-image-section-target');
-            const targetId = targetKey === 'restylize'
-                ? 'imageRestylizeShowcase'
-                : targetKey === 'restoration'
-                    ? 'imageRestorationShowcase'
-                    : 'imageEnhancementShowcase';
-            document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            scrollImagePageToSection(targetKey);
         });
     });
 

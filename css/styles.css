@@ -1569,7 +1569,7 @@ video.is-loading-source {
 
 .image-comparison-options {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.7rem;
     margin-top: 1rem;
 }
@@ -1950,6 +1950,10 @@ footer {
     gap: 0.8rem;
 }
 
+.contact-form-honey {
+    display: none !important;
+}
+
 .contact-form input,
 .contact-form textarea {
     width: 100%;
@@ -1957,6 +1961,27 @@ footer {
     background: rgba(255, 255, 255, 0.03);
     color: #fff;
     padding: 0.9rem 1rem;
+}
+
+.contact-form-status {
+    min-height: 1.2rem;
+    margin: 0;
+    color: var(--text-soft);
+    font-size: 0.8rem;
+    line-height: 1.45;
+}
+
+.contact-form-status.is-success {
+    color: rgba(214, 255, 224, 0.9);
+}
+
+.contact-form-status.is-error {
+    color: rgba(255, 188, 188, 0.95);
+}
+
+.contact-form.is-sending .submit-btn {
+    opacity: 0.68;
+    pointer-events: none;
 }
 
 .submit-btn {

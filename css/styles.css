@@ -947,6 +947,10 @@ video.is-loading-source {
     padding-top: clamp(4rem, 7vw, 5.6rem);
 }
 
+.hero-images .portfolio-page-kicker {
+    margin-bottom: 1.25rem;
+}
+
 .hero-images h1 {
     max-width: 12ch;
     font-size: clamp(2.8rem, 5.4vw, 4.8rem);

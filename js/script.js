@@ -346,6 +346,18 @@ function toggleContactWidget() {
     }
 }
 
+function handleContactWidgetOutsideClick(event) {
+    if (!contactWidgetElement?.classList.contains('is-open') || !(event.target instanceof Node)) {
+        return;
+    }
+
+    if (contactWidgetElement.contains(event.target)) {
+        return;
+    }
+
+    closeContactWidget();
+}
+
 function clearMenuPreviewState() {
     return;
 }
@@ -493,7 +505,7 @@ function ensureVideoOverlay() {
     overlay.innerHTML = `
         <div class="media-overlay-inner">
             <button class="media-overlay-close" type="button" aria-label="Close video overlay">X</button>
-            <video playsinline controls></video>
+            <video playsinline controls controlslist="nofullscreen nodownload noremoteplayback" disablepictureinpicture preload="metadata"></video>
         </div>
     `;
 
@@ -510,20 +522,96 @@ function ensureVideoOverlay() {
     videoOverlayCloseButton?.addEventListener('click', closeVideoOverlay);
 }
 
+function getVideoSource(video) {
+    if (!(video instanceof HTMLVideoElement)) {
+        return '';
+    }
+
+    const source = video.querySelector('source');
+    return source?.getAttribute('src') || source?.dataset.src || video.currentSrc || '';
+}
+
+function hydrateLazyVideo(video) {
+    if (!(video instanceof HTMLVideoElement)) {
+        return false;
+    }
+
+    const source = video.querySelector('source');
+    const deferredSource = source?.dataset.src;
+    if (!source || !deferredSource || source.getAttribute('src')) {
+        return false;
+    }
+
+    video.classList.add('is-loading-source');
+    source.setAttribute('src', deferredSource);
+    video.load();
+    video.addEventListener('canplay', () => {
+        video.classList.remove('is-loading-source');
+        video.classList.add('is-source-ready');
+    }, { once: true });
+    return true;
+}
+
+function playLazyVideo(video) {
+    hydrateLazyVideo(video);
+    return video.play().catch(() => undefined);
+}
+
+function initViewportLazyAutoplayVideos() {
+    const lazyAutoplayVideos = Array.from(document.querySelectorAll('video[data-lazy-video][autoplay][muted][loop]'))
+        .filter((video) => !video.closest('.carousel-item'));
+
+    if (!lazyAutoplayVideos.length) {
+        return;
+    }
+
+    if (!('IntersectionObserver' in window)) {
+        lazyAutoplayVideos.forEach((video) => playLazyVideo(video));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            const video = entry.target;
+            if (!(video instanceof HTMLVideoElement)) {
+                return;
+            }
+
+            if (entry.isIntersecting) {
+                playLazyVideo(video);
+            } else {
+                video.pause();
+            }
+        });
+    }, {
+        rootMargin: '420px 0px',
+        threshold: 0.01
+    });
+
+    lazyAutoplayVideos.forEach((video) => observer.observe(video));
+}
+
 function openVideoOverlay(video) {
     if (!(video instanceof HTMLVideoElement) || !videoOverlayElement || !videoOverlayPlayer) {
         return;
     }
 
-    const source = video.querySelector('source')?.getAttribute('src') || video.currentSrc;
+    const source = getVideoSource(video);
     if (!source) {
         return;
     }
 
     overlaySourceVideo = video;
     video.pause();
+    videoOverlayPlayer.controls = true;
+    videoOverlayPlayer.controlsList?.add('nofullscreen');
+    videoOverlayPlayer.controlsList?.add('nodownload');
+    videoOverlayPlayer.controlsList?.add('noremoteplayback');
+    videoOverlayPlayer.disablePictureInPicture = true;
+    videoOverlayPlayer.preload = 'metadata';
     videoOverlayPlayer.src = source;
     videoOverlayPlayer.poster = video.getAttribute('poster') || '';
+    videoOverlayPlayer.load();
     videoOverlayElement.classList.add('is-open');
     document.body.style.overflow = 'hidden';
     videoOverlayPlayer.play().catch(() => undefined);
@@ -539,8 +627,8 @@ function closeVideoOverlay() {
     videoOverlayPlayer.removeAttribute('src');
     videoOverlayPlayer.load();
     document.body.style.overflow = '';
-    if (overlaySourceVideo && activePortfolioPage === 'videos') {
-        overlaySourceVideo.play().catch(() => undefined);
+    if (overlaySourceVideo?.closest('.carousel-item') && activePortfolioPage === 'videos') {
+        playLazyVideo(overlaySourceVideo);
     }
     overlaySourceVideo = null;
 }
@@ -733,7 +821,7 @@ function playCurrentCarouselVideo() {
         video.muted = isMuted;
         video.volume = isMuted ? 0 : currentVolume;
         if (index === activeIndex && activePortfolioPage === 'videos') {
-            video.play().catch(() => undefined);
+            playLazyVideo(video);
         } else {
             video.pause();
         }
@@ -1388,9 +1476,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     galleryVideos.forEach((video) => {
         video.muted = true;
-        video.preload = 'metadata';
+        video.preload = 'none';
         video.addEventListener('click', () => openVideoOverlay(video));
     });
+
+    initViewportLazyAutoplayVideos();
 
     volumeSliderElement?.addEventListener('input', (event) => {
         const value = Number(event.target.value) / 100;
@@ -1452,6 +1542,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     contactWidgetToggleElement?.addEventListener('click', toggleContactWidget);
     contactWidgetCloseElement?.addEventListener('click', closeContactWidget);
+    document.addEventListener('click', handleContactWidgetOutsideClick);
 
     document.querySelectorAll('.contact-form').forEach((contactForm) => {
         contactForm.addEventListener('submit', (event) => {

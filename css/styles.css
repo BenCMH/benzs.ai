@@ -829,6 +829,7 @@ body[data-active-portfolio-page="images"] .site-glass-shell {
     display: block;
     background: rgba(0, 0, 0, 0.5);
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    cursor: pointer;
 }
 
 .carousel-item.is-active {
@@ -884,6 +885,10 @@ body[data-active-portfolio-page="images"] .site-glass-shell {
     padding: 2rem 0 0;
 }
 
+.video-gallery {
+    margin: 1.5rem 0 2rem;
+}
+
 .video-gallery h2,
 .image-gallery-page h2,
 .projects h2 {
@@ -914,6 +919,15 @@ body[data-active-portfolio-page="images"] .site-glass-shell {
     width: 100%;
     display: block;
     background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+video[data-lazy-video] {
+    object-fit: cover;
+}
+
+video.is-loading-source {
+    filter: saturate(0.9) brightness(0.86);
 }
 
 .portfolio-page-kicker,
@@ -1858,12 +1872,22 @@ footer {
     border-radius: 999px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 18px 32px rgba(0, 0, 0, 0.28);
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease;
+}
+
+.contact-widget.is-open .contact-widget-toggle {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(0.45rem) scale(0.86);
 }
 
 .contact-widget-panel {
     position: absolute;
     right: 0;
-    bottom: 4.3rem;
+    bottom: 0;
     width: min(24rem, calc(100vw - 2rem));
     padding: 1.2rem;
     overflow: hidden;
@@ -1973,6 +1997,11 @@ footer {
     max-width: 100%;
     max-height: 88vh;
     display: block;
+}
+
+.media-overlay video {
+    cursor: auto !important;
+    pointer-events: auto;
 }
 
 .media-overlay img {

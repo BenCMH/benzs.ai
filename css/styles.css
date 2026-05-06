@@ -683,7 +683,7 @@ a {
 }
 
 body[data-active-portfolio-page="images"] .site-glass-shell {
-    margin-bottom: calc(var(--navbar-height) + 4.5rem + var(--image-shell-pin-offset));
+    margin-bottom: calc(var(--navbar-height) + 4.5rem + (var(--image-shell-pin-offset) * 0.5));
 }
 
 .site-glass-shell::before {

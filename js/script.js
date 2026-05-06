@@ -53,6 +53,7 @@ let lastVolume = 0.72;
 
 let siteLoaderElement = null;
 let navbarElement = null;
+let logoHomeLinkElement = null;
 let hamburgerButtonElement = null;
 let menuOverlayElement = null;
 let menuOverlayNavElement = null;
@@ -976,6 +977,12 @@ function rememberActivePortfolioPage() {
     } catch {}
 }
 
+function forgetActivePortfolioPage() {
+    try {
+        sessionStorage.removeItem(ACTIVE_PORTFOLIO_PAGE_STORAGE_KEY);
+    } catch {}
+}
+
 function getRememberedPortfolioPage() {
     try {
         const pageKey = sessionStorage.getItem(ACTIVE_PORTFOLIO_PAGE_STORAGE_KEY);
@@ -1068,6 +1075,17 @@ function switchPortfolioPageFromNavigation(pageKey) {
     if (!smoothScrollFrame) {
         smoothScrollFrame = window.requestAnimationFrame(stepSmoothScroll);
     }
+}
+
+function returnToVideoHome(event) {
+    event.preventDefault();
+    pendingPortfolioPageSwitch = null;
+    smoothScrollTargetY = null;
+    smoothScrollFrame = null;
+    forgetActivePortfolioPage();
+    switchPortfolioPage('videos', false);
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    updateFloatingNavbar();
 }
 
 function getImageGalleryCategoryOrder() {
@@ -1560,6 +1578,7 @@ function setImageRestorationOption(button) {
 document.addEventListener('DOMContentLoaded', () => {
     siteLoaderElement = document.getElementById('siteLoader');
     navbarElement = document.querySelector('.navbar');
+    logoHomeLinkElement = document.getElementById('logoHomeLink');
     hamburgerButtonElement = document.getElementById('hamburger');
     menuOverlayElement = document.getElementById('menuOverlay');
     menuOverlayNavElement = menuOverlayElement?.querySelector('.menu-overlay-nav') ?? null;
@@ -1655,6 +1674,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     hamburgerButtonElement?.addEventListener('click', toggleMenuOverlay);
+    logoHomeLinkElement?.addEventListener('click', returnToVideoHome);
     menuOverlayAboutLinkElement?.addEventListener('click', toggleMenuOverlayAbout);
 
     Object.entries(MENU_PREVIEW_CONFIG).forEach(([previewKey, config]) => {

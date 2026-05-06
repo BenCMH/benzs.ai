@@ -28,7 +28,7 @@ const SMOOTH_SCROLL_TOP_SNAP = 3;
 const SMOOTH_SCROLL_BOTTOM_SNAP = 3;
 const SMOOTH_SCROLL_EDGE_ZONE = 42;
 const PORTFOLIO_PAGE_SWITCH_TOP_THRESHOLD = 18;
-const NAVBAR_TOP_IDLE_THRESHOLD = 48;
+const NAVBAR_TOP_IDLE_THRESHOLD = 2;
 const MUTE_ICON_SRC = 'media/images/icons/mute.png';
 const VOLUME_ICON_SRC = 'media/images/icons/volume-on.png';
 

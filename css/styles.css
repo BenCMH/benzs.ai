@@ -193,9 +193,11 @@ a {
 }
 
 .navbar.is-initial-state {
-    background: rgba(18, 22, 28, 0.04);
-    border-color: rgba(255, 255, 255, 0.04);
+    background: transparent;
+    border-color: transparent;
     box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 }
 
 .navbar.is-collapsed {

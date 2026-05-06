@@ -954,6 +954,7 @@ video.is-loading-source {
 .hero-images h1 {
     max-width: 12ch;
     font-size: clamp(2.8rem, 5.4vw, 4.8rem);
+    margin-top: 2rem;
 }
 
 .hero-images p {

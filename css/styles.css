@@ -43,11 +43,15 @@ html,
 body {
     margin: 0;
     min-height: 100%;
+    background-color: var(--bg-0);
     background:
         radial-gradient(circle at 16% 22%, rgba(91, 130, 160, 0.26), transparent 18%),
         radial-gradient(circle at 78% 24%, rgba(192, 138, 102, 0.18), transparent 14%),
         radial-gradient(circle at 68% 68%, rgba(218, 180, 140, 0.18), transparent 18%),
         linear-gradient(180deg, var(--bg-1), var(--bg-0) 60%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100vh;
     color: var(--text);
     font-family: "Montserrat", "Segoe UI", sans-serif;
     cursor: none !important;
@@ -759,6 +763,8 @@ a {
 
 .carousel-container {
     overflow: hidden;
+    touch-action: pan-y;
+    user-select: none;
 }
 
 .carousel-track {
@@ -774,6 +780,22 @@ a {
     opacity: 0.42;
     transform: scale(0.9);
     transition: transform 0.34s ease, opacity 0.34s ease;
+}
+
+.carousel-container:hover .carousel-track {
+    cursor: grab !important;
+}
+
+.carousel-container.is-dragging .carousel-track {
+    cursor: grabbing !important;
+}
+
+.carousel-container.is-dragging .carousel-item {
+    transition: none;
+}
+
+.carousel-container.is-dragging .carousel-track {
+    transition: none;
 }
 
 .carousel-item video {

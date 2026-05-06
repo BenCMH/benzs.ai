@@ -35,6 +35,11 @@ let carouselVideos = [];
 let galleryVideos = [];
 let totalCarouselItems = 0;
 let carouselPosition = 0;
+let carouselTrackElement = null;
+let isCarouselDragging = false;
+let carouselDragStartX = 0;
+let carouselDragOffsetX = 0;
+let suppressCarouselVideoClick = false;
 let isMuted = true;
 let currentVolume = 0.72;
 let lastVolume = 0.72;
@@ -597,10 +602,9 @@ function updateCarousel() {
     const containerWidth = carouselContainerElement.getBoundingClientRect().width;
     const gap = 19;
     const itemWidth = containerWidth * 0.68;
-    const translateX = -((itemWidth + gap) * activeIndex) + ((containerWidth - itemWidth) / 2);
-    const track = carouselContainerElement.querySelector('.carousel-track');
-    if (track) {
-        track.style.transform = `translate3d(${translateX}px, 0, 0)`;
+    const translateX = -((itemWidth + gap) * activeIndex) + ((containerWidth - itemWidth) / 2) + carouselDragOffsetX;
+    if (carouselTrackElement) {
+        carouselTrackElement.style.transform = `translate3d(${translateX}px, 0, 0)`;
     }
 
     carouselItems.forEach((item, index) => {
@@ -608,6 +612,92 @@ function updateCarousel() {
     });
 
     playCurrentCarouselVideo();
+}
+
+function endCarouselDrag(pointerId = null) {
+    if (!carouselContainerElement) {
+        return;
+    }
+
+    if (pointerId !== null) {
+        try {
+            carouselContainerElement.releasePointerCapture(pointerId);
+        } catch {}
+    }
+
+    const threshold = Math.max(56, carouselContainerElement.getBoundingClientRect().width * 0.08);
+    if (carouselDragOffsetX <= -threshold) {
+        carouselPosition += 1;
+    } else if (carouselDragOffsetX >= threshold) {
+        carouselPosition -= 1;
+    }
+
+    isCarouselDragging = false;
+    carouselDragStartX = 0;
+    carouselDragOffsetX = 0;
+    carouselContainerElement.classList.remove('is-dragging');
+    updateCarousel();
+
+    window.setTimeout(() => {
+        suppressCarouselVideoClick = false;
+    }, 0);
+}
+
+function initCarouselDrag() {
+    if (!carouselContainerElement || !carouselTrackElement) {
+        return;
+    }
+
+    carouselContainerElement.addEventListener('pointerdown', (event) => {
+        if (event.pointerType === 'mouse' && event.button !== 0) {
+            return;
+        }
+
+        isCarouselDragging = true;
+        carouselDragStartX = event.clientX;
+        carouselDragOffsetX = 0;
+        suppressCarouselVideoClick = false;
+        carouselContainerElement.classList.add('is-dragging');
+        carouselContainerElement.setPointerCapture(event.pointerId);
+    });
+
+    carouselContainerElement.addEventListener('pointermove', (event) => {
+        if (!isCarouselDragging) {
+            return;
+        }
+
+        carouselDragOffsetX = event.clientX - carouselDragStartX;
+        if (Math.abs(carouselDragOffsetX) > 6) {
+            suppressCarouselVideoClick = true;
+        }
+        updateCarousel();
+    });
+
+    carouselContainerElement.addEventListener('pointerup', (event) => {
+        if (!isCarouselDragging) {
+            return;
+        }
+        const draggedEnoughToSuppressClick = suppressCarouselVideoClick;
+        const pointerTarget = event.target instanceof Element ? event.target.closest('video') : null;
+        endCarouselDrag(event.pointerId);
+        if (!draggedEnoughToSuppressClick && pointerTarget instanceof HTMLVideoElement) {
+            openVideoOverlay(pointerTarget);
+        }
+    });
+
+    carouselContainerElement.addEventListener('pointercancel', (event) => {
+        if (!isCarouselDragging) {
+            return;
+        }
+        endCarouselDrag(event.pointerId);
+    });
+
+    carouselContainerElement.addEventListener('lostpointercapture', () => {
+        if (!isCarouselDragging) {
+            return;
+        }
+        endCarouselDrag();
+    });
 }
 
 function playCurrentCarouselVideo() {
@@ -1204,6 +1294,7 @@ document.addEventListener('DOMContentLoaded', () => {
     contactWidgetToggleElement = document.getElementById('contactWidgetToggle');
     contactWidgetCloseElement = document.getElementById('contactWidgetClose');
     carouselContainerElement = document.querySelector('.carousel-container');
+    carouselTrackElement = carouselContainerElement?.querySelector('.carousel-track') || null;
     volumeSliderElement = document.getElementById('volumeSlider');
     mouseTrailShellElement = document.querySelector('.site-glass-shell');
     mouseTrailLayerElement = document.getElementById('mouseTrailLayer');
@@ -1237,7 +1328,14 @@ document.addEventListener('DOMContentLoaded', () => {
     carouselVideos.forEach((video) => {
         video.muted = isMuted;
         video.volume = isMuted ? 0 : currentVolume;
-        video.addEventListener('click', () => openVideoOverlay(video));
+        video.addEventListener('click', (event) => {
+            if (suppressCarouselVideoClick) {
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+            }
+            openVideoOverlay(video);
+        });
     });
 
     galleryVideos.forEach((video) => {
@@ -1374,6 +1472,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    initCarouselDrag();
     window.addEventListener('resize', syncImageRestorationOptionHeight);
 
     document.querySelectorAll('.image-library-card img').forEach((image) => {

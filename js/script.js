@@ -20,6 +20,12 @@ function scrollToSection(sectionId) {
     }
 }
 
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+
+window.scrollTo(0, 0);
+
 let smoothScrollTargetY = null;
 let smoothScrollFrame = null;
 let smoothScrollEnabled = false;

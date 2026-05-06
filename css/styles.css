@@ -230,6 +230,11 @@ a {
     opacity: 0;
 }
 
+.navbar.is-initial-state .navbar-subtitle {
+    opacity: 1;
+    visibility: visible;
+}
+
 .hamburger-menu {
     position: relative;
     width: 2.7rem;
@@ -1995,6 +2000,12 @@ footer {
 @media (max-width: 980px) {
     .navbar-subtitle {
         display: none;
+    }
+
+    .navbar.is-initial-state .navbar-subtitle {
+        display: block;
+        font-size: 0.58rem;
+        letter-spacing: 0.12em;
     }
 
     .image-showcase-grid,

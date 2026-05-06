@@ -729,6 +729,17 @@ function updateCarousel() {
     playCurrentCarouselVideo();
 }
 
+function openCarouselItemVideo(item) {
+    if (!(item instanceof Element)) {
+        return;
+    }
+
+    const video = item.querySelector('video');
+    if (video instanceof HTMLVideoElement) {
+        openVideoOverlay(video);
+    }
+}
+
 function endCarouselDrag(pointerId = null) {
     if (!carouselContainerElement) {
         return;
@@ -793,10 +804,10 @@ function initCarouselDrag() {
             return;
         }
         const draggedEnoughToSuppressClick = suppressCarouselVideoClick;
-        const pointerTarget = event.target instanceof Element ? event.target.closest('video') : null;
+        const pointerTarget = event.target instanceof Element ? event.target.closest('.carousel-item') : null;
         endCarouselDrag(event.pointerId);
-        if (!draggedEnoughToSuppressClick && pointerTarget instanceof HTMLVideoElement) {
-            openVideoOverlay(pointerTarget);
+        if (!draggedEnoughToSuppressClick) {
+            openCarouselItemVideo(pointerTarget);
         }
     });
 
@@ -1464,14 +1475,6 @@ document.addEventListener('DOMContentLoaded', () => {
     carouselVideos.forEach((video) => {
         video.muted = isMuted;
         video.volume = isMuted ? 0 : currentVolume;
-        video.addEventListener('click', (event) => {
-            if (suppressCarouselVideoClick) {
-                event.preventDefault();
-                event.stopPropagation();
-                return;
-            }
-            openVideoOverlay(video);
-        });
     });
 
     galleryVideos.forEach((video) => {

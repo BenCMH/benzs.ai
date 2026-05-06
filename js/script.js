@@ -24,8 +24,6 @@ if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
 }
 
-window.scrollTo(0, 0);
-
 let smoothScrollTargetY = null;
 let smoothScrollFrame = null;
 let smoothScrollEnabled = false;
@@ -37,6 +35,7 @@ const PORTFOLIO_PAGE_SWITCH_TOP_THRESHOLD = 18;
 const NAVBAR_TOP_IDLE_THRESHOLD = 16;
 const MUTE_ICON_SRC = 'media/images/icons/mute.png';
 const VOLUME_ICON_SRC = 'media/images/icons/volume-on.png';
+const ACTIVE_PORTFOLIO_PAGE_STORAGE_KEY = 'benzs-active-portfolio-page';
 
 let carouselItems = [];
 let carouselVideos = [];
@@ -971,6 +970,21 @@ function syncActivePortfolioPageAttribute() {
     document.body.dataset.activePortfolioPage = activePortfolioPage;
 }
 
+function rememberActivePortfolioPage() {
+    try {
+        sessionStorage.setItem(ACTIVE_PORTFOLIO_PAGE_STORAGE_KEY, activePortfolioPage);
+    } catch {}
+}
+
+function getRememberedPortfolioPage() {
+    try {
+        const pageKey = sessionStorage.getItem(ACTIVE_PORTFOLIO_PAGE_STORAGE_KEY);
+        return portfolioPageMeta[pageKey] ? pageKey : activePortfolioPage;
+    } catch {
+        return activePortfolioPage;
+    }
+}
+
 function syncPortfolioPagesHeight(animate = false) {
     if (!portfolioPagesContainerElement) {
         return;
@@ -1008,6 +1022,7 @@ function switchPortfolioPage(pageKey, shouldScrollToTop = true) {
 
     activePortfolioPage = pageKey;
     syncActivePortfolioPageAttribute();
+    rememberActivePortfolioPage();
     portfolioPages.forEach((page) => {
         const isActive = page.getAttribute('data-portfolio-page') === pageKey;
         page.classList.toggle('is-active', isActive);
@@ -1585,6 +1600,8 @@ document.addEventListener('DOMContentLoaded', () => {
     applyImageGalleryCategoryState(activeImageGalleryCategory);
     initImageComparisons();
     syncImageRestorationOptionHeight();
+    switchPortfolioPage(getRememberedPortfolioPage(), false);
+    window.scrollTo(0, 0);
     syncActivePortfolioPageAttribute();
     updatePortfolioSubtitle();
     updatePortfolioPageLinks();

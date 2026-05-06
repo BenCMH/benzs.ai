@@ -675,6 +675,10 @@ a {
     transform: translateY(var(--image-shell-pin-offset));
 }
 
+body[data-active-portfolio-page="images"] .site-glass-shell {
+    margin-bottom: calc(var(--navbar-height) + 4.5rem);
+}
+
 .site-glass-shell::before {
     content: "";
     position: absolute;
@@ -729,10 +733,6 @@ a {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-}
-
-.portfolio-page[data-portfolio-page="images"] {
-    padding-bottom: var(--navbar-height);
 }
 
 .portfolio-page[aria-hidden="true"],
@@ -1823,7 +1823,7 @@ a {
 }
 
 footer {
-    padding: 2.5rem 0 1rem;
+    padding: 2.5rem 0 3rem;
     text-align: center;
     color: var(--text-dim);
     font-size: 0.85rem;
@@ -1859,10 +1859,35 @@ footer {
     bottom: 4.3rem;
     width: min(24rem, calc(100vw - 2rem));
     padding: 1.2rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--glass);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    box-shadow: var(--shadow);
     opacity: 0;
     visibility: hidden;
     transform: translateY(0.8rem);
     transition: opacity 0.24s ease, transform 0.24s ease, visibility 0.24s ease;
+}
+
+.contact-widget-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.16;
+    mix-blend-mode: screen;
+    background-image:
+        repeating-radial-gradient(circle at 17% 23%, rgba(255, 255, 255, 0.08) 0 0.5px, transparent 0.8px 3.5px),
+        repeating-radial-gradient(circle at 79% 71%, rgba(255, 255, 255, 0.045) 0 0.45px, transparent 0.75px 4.2px);
+    background-size: 7rem 7rem, 5.5rem 5.5rem;
+}
+
+.contact-widget-panel > * {
+    position: relative;
+    z-index: 1;
 }
 
 .contact-widget.is-open .contact-widget-panel {

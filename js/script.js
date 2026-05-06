@@ -457,6 +457,31 @@ function toggleMenuOverlayAbout() {
     }
 }
 
+function closeMenuOverlayAbout() {
+    if (!menuOverlayNavElement?.classList.contains('is-about-mode')) {
+        return false;
+    }
+
+    menuOverlayNavElement.classList.remove('is-about-mode');
+    menuOverlayAboutPanelElement?.setAttribute('aria-hidden', 'true');
+    resetMenuOverlayAboutParallax();
+    return true;
+}
+
+function handleMenuOverlayBackgroundClick(event) {
+    if (!menuOverlayElement?.classList.contains('is-open') || !(event.target instanceof Node)) {
+        return;
+    }
+
+    if (menuOverlayNavElement?.contains(event.target)) {
+        return;
+    }
+
+    if (!closeMenuOverlayAbout()) {
+        closeMenuOverlay();
+    }
+}
+
 function ensureVideoOverlay() {
     if (videoOverlayElement) {
         return;
@@ -774,6 +799,10 @@ function updatePortfolioPageLinks() {
     });
 }
 
+function syncActivePortfolioPageAttribute() {
+    document.body.dataset.activePortfolioPage = activePortfolioPage;
+}
+
 function syncPortfolioPagesHeight(animate = false) {
     if (!portfolioPagesContainerElement) {
         return;
@@ -810,6 +839,7 @@ function switchPortfolioPage(pageKey, shouldScrollToTop = true) {
     }
 
     activePortfolioPage = pageKey;
+    syncActivePortfolioPageAttribute();
     portfolioPages.forEach((page) => {
         const isActive = page.getAttribute('data-portfolio-page') === pageKey;
         page.classList.toggle('is-active', isActive);
@@ -1339,6 +1369,7 @@ document.addEventListener('DOMContentLoaded', () => {
     applyImageGalleryCategoryState(activeImageGalleryCategory);
     initImageComparisons();
     syncImageRestorationOptionHeight();
+    syncActivePortfolioPageAttribute();
     updatePortfolioSubtitle();
     updatePortfolioPageLinks();
 
@@ -1385,6 +1416,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateMenuOverlayProximity(event.clientX, event.clientY);
         updateMenuOverlayAboutParallax(event);
     }, { passive: true });
+    menuOverlayElement?.addEventListener('click', handleMenuOverlayBackgroundClick);
 
     navbarElement?.addEventListener('mouseenter', () => {
         isNavbarHovered = true;

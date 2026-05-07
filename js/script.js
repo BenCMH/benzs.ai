@@ -96,6 +96,7 @@ let videoOverlayElement = null;
 let videoOverlayPlayer = null;
 let videoOverlayCloseButton = null;
 let overlaySourceVideo = null;
+let overlaySourceShouldResume = false;
 let imageOverlayElement = null;
 let imageOverlayImage = null;
 let imageOverlayCloseButton = null;
@@ -660,6 +661,8 @@ function openVideoOverlay(video) {
     }
 
     overlaySourceVideo = video;
+    overlaySourceShouldResume = !video.paused && !video.ended;
+    const sourceCurrentTime = Number.isFinite(video.currentTime) ? video.currentTime : 0;
     video.pause();
     videoOverlayPlayer.controls = true;
     videoOverlayPlayer.controlsList?.add('nofullscreen');
@@ -670,6 +673,11 @@ function openVideoOverlay(video) {
     videoOverlayPlayer.src = source;
     videoOverlayPlayer.poster = video.getAttribute('poster') || '';
     videoOverlayPlayer.load();
+    videoOverlayPlayer.addEventListener('loadedmetadata', () => {
+        if (sourceCurrentTime > 0 && Number.isFinite(videoOverlayPlayer.duration)) {
+            videoOverlayPlayer.currentTime = Math.min(sourceCurrentTime, Math.max(0, videoOverlayPlayer.duration - 0.05));
+        }
+    }, { once: true });
     videoOverlayElement.classList.add('is-open');
     document.body.style.overflow = 'hidden';
     videoOverlayPlayer.play().catch(() => undefined);
@@ -682,13 +690,19 @@ function closeVideoOverlay() {
 
     videoOverlayElement.classList.remove('is-open');
     videoOverlayPlayer.pause();
+    const overlayCurrentTime = Number.isFinite(videoOverlayPlayer.currentTime) ? videoOverlayPlayer.currentTime : null;
+    if (overlaySourceVideo && overlayCurrentTime !== null) {
+        overlaySourceVideo.currentTime = overlayCurrentTime;
+    }
     videoOverlayPlayer.removeAttribute('src');
     videoOverlayPlayer.load();
     document.body.style.overflow = '';
-    if (overlaySourceVideo?.closest('.carousel-item') && activePortfolioPage === 'videos') {
+    if (overlaySourceShouldResume && overlaySourceVideo?.closest('.carousel-item') && activePortfolioPage === 'videos') {
+        isCarouselPlaybackEnabled = true;
         playLazyVideo(overlaySourceVideo);
     }
     overlaySourceVideo = null;
+    overlaySourceShouldResume = false;
 }
 
 function ensureImageOverlay() {

@@ -759,6 +759,10 @@ function isCarouselVideo(video) {
     return video instanceof HTMLVideoElement && Boolean(video.closest('.carousel-item'));
 }
 
+function isGalleryVideo(video) {
+    return video instanceof HTMLVideoElement && Boolean(video.closest('.gallery-media'));
+}
+
 function applyCarouselAudioState(syncOverlay = true) {
     carouselVideos.forEach((video) => {
         video.muted = isMuted;
@@ -877,10 +881,11 @@ function openVideoOverlay(video) {
     }
 
     const sourceIsCarouselVideo = isCarouselVideo(video);
-    const initialOverlayMuted = sourceIsCarouselVideo ? isMuted : video.muted;
+    const sourceIsGalleryVideo = isGalleryVideo(video);
+    const initialOverlayMuted = sourceIsCarouselVideo ? isMuted : (sourceIsGalleryVideo ? false : video.muted);
     const initialOverlayVolume = sourceIsCarouselVideo
         ? (isMuted ? 0 : currentVolume || lastVolume || 0.72)
-        : (Number.isFinite(video.volume) ? video.volume : 1);
+        : (sourceIsGalleryVideo ? 1 : (Number.isFinite(video.volume) ? video.volume : 1));
     const overlayPlayer = createVideoOverlayPlayer({
         muted: initialOverlayMuted,
         volume: initialOverlayVolume
@@ -899,6 +904,11 @@ function openVideoOverlay(video) {
     video.pause();
     if (sourceIsCarouselVideo) {
         applyOverlayAudioStateFromCarousel();
+    } else if (sourceIsGalleryVideo) {
+        overlayPlayer.removeAttribute('muted');
+        overlayPlayer.defaultMuted = false;
+        overlayPlayer.muted = false;
+        overlayPlayer.volume = 1;
     } else {
         if (video.muted) {
             overlayPlayer.setAttribute('muted', '');

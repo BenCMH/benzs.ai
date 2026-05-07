@@ -68,6 +68,7 @@ let contactWidgetCloseElement = null;
 let carouselContainerElement = null;
 let volumeSliderElement = null;
 let isCarouselInView = true;
+let isCarouselPlaybackEnabled = true;
 let mouseTrailShellElement = null;
 let mouseTrailLayerElement = null;
 let portfolioPagesContainerElement = null;
@@ -850,6 +851,7 @@ function initCarouselDrag() {
         }
 
         isCarouselDragging = true;
+        isCarouselPlaybackEnabled = true;
         carouselDragStartX = event.clientX;
         carouselDragOffsetX = 0;
         suppressCarouselVideoClick = false;
@@ -901,7 +903,7 @@ function playCurrentCarouselVideo() {
     carouselVideos.forEach((video, index) => {
         video.muted = isMuted;
         video.volume = isMuted ? 0 : currentVolume;
-        if (index === activeIndex && activePortfolioPage === 'videos' && isCarouselInView) {
+        if (index === activeIndex && activePortfolioPage === 'videos' && isCarouselInView && isCarouselPlaybackEnabled) {
             playLazyVideo(video);
         } else {
             video.pause();
@@ -922,6 +924,9 @@ function initCarouselVisibilityObserver() {
     const observer = new IntersectionObserver((entries) => {
         const entry = entries[0];
         isCarouselInView = Boolean(entry?.isIntersecting);
+        if (!isCarouselInView) {
+            isCarouselPlaybackEnabled = false;
+        }
         playCurrentCarouselVideo();
     }, {
         threshold: 0.18
@@ -935,6 +940,7 @@ function moveCarousel(direction) {
         return;
     }
 
+    isCarouselPlaybackEnabled = true;
     carouselPosition += direction;
     updateCarousel();
 }

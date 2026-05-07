@@ -67,6 +67,7 @@ let contactWidgetToggleElement = null;
 let contactWidgetCloseElement = null;
 let carouselContainerElement = null;
 let volumeSliderElement = null;
+let isCarouselInView = true;
 let mouseTrailShellElement = null;
 let mouseTrailLayerElement = null;
 let portfolioPagesContainerElement = null;
@@ -900,12 +901,33 @@ function playCurrentCarouselVideo() {
     carouselVideos.forEach((video, index) => {
         video.muted = isMuted;
         video.volume = isMuted ? 0 : currentVolume;
-        if (index === activeIndex && activePortfolioPage === 'videos') {
+        if (index === activeIndex && activePortfolioPage === 'videos' && isCarouselInView) {
             playLazyVideo(video);
         } else {
             video.pause();
         }
     });
+}
+
+function initCarouselVisibilityObserver() {
+    if (!carouselContainerElement) {
+        return;
+    }
+
+    if (!('IntersectionObserver' in window)) {
+        isCarouselInView = true;
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        const entry = entries[0];
+        isCarouselInView = Boolean(entry?.isIntersecting);
+        playCurrentCarouselVideo();
+    }, {
+        threshold: 0.18
+    });
+
+    observer.observe(carouselContainerElement);
 }
 
 function moveCarousel(direction) {
@@ -1764,6 +1786,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initCarouselDrag();
+    initCarouselVisibilityObserver();
     window.addEventListener('resize', syncImageRestorationOptionHeight);
 
     document.querySelectorAll('.image-library-card img').forEach((image) => {

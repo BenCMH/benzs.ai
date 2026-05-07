@@ -33,6 +33,7 @@ const SMOOTH_SCROLL_BOTTOM_SNAP = 2;
 const SMOOTH_SCROLL_EDGE_ZONE = 42;
 const PORTFOLIO_PAGE_SWITCH_TOP_THRESHOLD = 18;
 const NAVBAR_TOP_IDLE_THRESHOLD = 16;
+const MOBILE_NAVBAR_QUERY = '(max-width: 640px)';
 const MUTE_ICON_SRC = 'media/images/icons/mute.png';
 const VOLUME_ICON_SRC = 'media/images/icons/volume-on.png';
 const ACTIVE_PORTFOLIO_PAGE_STORAGE_KEY = 'benzs-active-portfolio-page';
@@ -89,6 +90,7 @@ let imageLibraryPinnedScrollFrame = null;
 let imageLibraryContinuousPanelElement = null;
 let imageLibraryContinuousHeadLabelElement = null;
 let imageLibraryContinuousHeadTitleElement = null;
+let imageLibraryMobileCategorySelectElement = null;
 let imageLibraryContinuousGridElement = null;
 let imageLibraryContinuousTrackElement = null;
 let imageGalleryContinuousSections = [];
@@ -298,6 +300,11 @@ function handleMouseTrailMove(event) {
 
 function syncNavbarThreshold() {
     if (!navbarElement) {
+        return;
+    }
+
+    if (window.matchMedia(MOBILE_NAVBAR_QUERY).matches) {
+        navbarElement.classList.remove('is-initial-state', 'is-collapsed');
         return;
     }
 
@@ -1047,18 +1054,16 @@ function closeImageOverlay() {
 }
 
 function updateCarousel() {
-    if (!carouselItems.length || !carouselContainerElement) {
+    if (!carouselItems.length || !carouselContainerElement || !carouselTrackElement) {
         return;
     }
 
     const activeIndex = ((carouselPosition % totalCarouselItems) + totalCarouselItems) % totalCarouselItems;
-    const containerWidth = carouselContainerElement.getBoundingClientRect().width;
-    const gap = 19;
-    const itemWidth = containerWidth * 0.68;
-    const translateX = -((itemWidth + gap) * activeIndex) + ((containerWidth - itemWidth) / 2) + carouselDragOffsetX;
-    if (carouselTrackElement) {
-        carouselTrackElement.style.transform = `translate3d(${translateX}px, 0, 0)`;
-    }
+    const containerRect = carouselContainerElement.getBoundingClientRect();
+    const activeItem = carouselItems[activeIndex];
+    const activeItemCenter = activeItem.offsetLeft + activeItem.offsetWidth / 2;
+    const translateX = (containerRect.width / 2) - activeItemCenter + carouselDragOffsetX;
+    carouselTrackElement.style.transform = `translate3d(${translateX}px, 0, 0)`;
 
     carouselItems.forEach((item, index) => {
         item.classList.toggle('is-active', index === activeIndex);
@@ -1497,12 +1502,45 @@ function buildContinuousImageLibrary() {
 
     const head = document.createElement('div');
     head.className = 'image-library-panel-head';
+    const mobileCategorySelectWrap = document.createElement('label');
+    mobileCategorySelectWrap.className = 'image-library-mobile-category';
+    const mobileCategorySelectText = document.createElement('span');
+    mobileCategorySelectText.textContent = 'Image Generation & Enhancement';
+    const mobileCategorySelect = document.createElement('select');
+    mobileCategorySelect.setAttribute('aria-label', 'Choose image generation and enhancement section');
+    const mobileGalleryGroup = document.createElement('optgroup');
+    mobileGalleryGroup.label = '[ Image Gallery ]';
+    categoryMeta.forEach((entry) => {
+        const option = document.createElement('option');
+        option.value = `gallery:${entry.categoryKey}`;
+        option.textContent = entry.heading;
+        mobileGalleryGroup.appendChild(option);
+    });
+    mobileCategorySelect.appendChild(mobileGalleryGroup);
+
+    if (imageSectionButtons.length) {
+        const mobileEnhancementGroup = document.createElement('optgroup');
+        mobileEnhancementGroup.label = '[ Enhancement & Restoration ]';
+        imageSectionButtons.forEach((button) => {
+            const sectionKey = button.getAttribute('data-image-section-target');
+            if (!sectionKey) {
+                return;
+            }
+
+            const option = document.createElement('option');
+            option.value = `section:${sectionKey}`;
+            option.textContent = button.textContent?.trim() || sectionKey;
+            mobileEnhancementGroup.appendChild(option);
+        });
+        mobileCategorySelect.appendChild(mobileEnhancementGroup);
+    }
+    mobileCategorySelectWrap.append(mobileCategorySelectText, mobileCategorySelect);
     const headLabel = document.createElement('p');
     headLabel.className = 'image-library-panel-label';
     headLabel.textContent = categoryMeta[0].label;
     const headTitle = document.createElement('h2');
     headTitle.textContent = categoryMeta[0].heading;
-    head.append(headLabel, headTitle);
+    head.append(mobileCategorySelectWrap, headLabel, headTitle);
 
     const grid = document.createElement('div');
     grid.className = 'image-library-grid';
@@ -1541,9 +1579,19 @@ function buildContinuousImageLibrary() {
     imageLibraryContinuousPanelElement = continuousPanel;
     imageLibraryContinuousHeadLabelElement = headLabel;
     imageLibraryContinuousHeadTitleElement = headTitle;
+    imageLibraryMobileCategorySelectElement = mobileCategorySelect;
     imageLibraryContinuousGridElement = grid;
     imageLibraryContinuousTrackElement = track;
     refreshImageGalleryContinuousSectionState();
+
+    mobileCategorySelect.addEventListener('change', () => {
+        const [targetType, targetKey] = mobileCategorySelect.value.split(':');
+        if (targetType === 'gallery' && targetKey) {
+            scrollImageGalleryToCategory(targetKey);
+        } else if (targetType === 'section' && targetKey) {
+            scrollImagePageToSection(targetKey);
+        }
+    });
 }
 
 function applyImageGalleryCategoryState(categoryKey) {
@@ -1559,6 +1607,11 @@ function applyImageGalleryCategoryState(categoryKey) {
     if (sectionState && imageLibraryContinuousHeadLabelElement && imageLibraryContinuousHeadTitleElement) {
         imageLibraryContinuousHeadLabelElement.textContent = sectionState.label;
         imageLibraryContinuousHeadTitleElement.textContent = sectionState.heading;
+    }
+
+    const mobileCategoryValue = `gallery:${categoryKey}`;
+    if (imageLibraryMobileCategorySelectElement && imageLibraryMobileCategorySelectElement.value !== mobileCategoryValue) {
+        imageLibraryMobileCategorySelectElement.value = mobileCategoryValue;
     }
 
     fitActiveImageLibraryTitle();
@@ -1580,15 +1633,21 @@ function getImageLibrarySequenceMetrics() {
     }
 
     const startScrollY = naturalShellTop - imageLibraryPinViewportTop;
+    const isMobilePinnedGallery = window.matchMedia(MOBILE_NAVBAR_QUERY).matches;
     const sidebarHeight = Math.ceil(imageLibrarySidebarElement.offsetHeight);
     const headHeight = Math.ceil(getActiveImageLibraryHead()?.offsetHeight || 0);
-    const releaseGridHeight = Math.max(0, sidebarHeight - headHeight - 24);
-    const totalScrollLength = Math.max(0, imageLibraryContinuousTrackElement.scrollHeight - releaseGridHeight);
+    const trackTopGuard = isMobilePinnedGallery
+        ? Math.ceil(imageLibraryContinuousTrackElement.offsetTop)
+        : 0;
+    const releaseGridHeight = isMobilePinnedGallery
+        ? Math.max(0, stageHeight - headHeight - 24)
+        : Math.max(0, sidebarHeight - headHeight - 24);
+    const totalScrollLength = Math.max(0, imageLibraryContinuousTrackElement.scrollHeight - releaseGridHeight + trackTopGuard);
     const sections = refreshImageGalleryContinuousSectionState();
     const metrics = sections.map((entry, index) => {
         const nextEntry = sections[index + 1] || null;
-        const startOffset = Math.max(0, entry.element.offsetTop);
-        const nextOffset = nextEntry ? Math.max(startOffset, nextEntry.element.offsetTop) : totalScrollLength;
+        const startOffset = Math.max(0, entry.element.offsetTop + trackTopGuard);
+        const nextOffset = nextEntry ? Math.max(startOffset, nextEntry.element.offsetTop + trackTopGuard) : totalScrollLength;
         return {
             categoryKey: entry.categoryKey,
             startOffset,
@@ -1601,6 +1660,7 @@ function getImageLibrarySequenceMetrics() {
         startScrollY,
         totalScrollLength,
         headHeight,
+        trackTopGuard,
         metrics
     };
 }
@@ -1609,10 +1669,14 @@ function isImageLibraryShellPinned() {
     return activePortfolioPage === 'images' && mouseTrailShellElement?.classList.contains('is-image-shell-pinned');
 }
 
+function shouldUseImageLibraryPinnedScroll() {
+    return window.innerWidth > 980 || window.matchMedia(MOBILE_NAVBAR_QUERY).matches;
+}
+
 function syncImageLibraryPinnedScroll() {
     imageLibraryPinnedScrollFrame = null;
 
-    if (!mouseTrailShellElement || !imageLibraryShellElement || !imageLibrarySidebarElement || !imageLibraryContentElement || activePortfolioPage !== 'images' || window.innerWidth <= 980) {
+    if (!mouseTrailShellElement || !imageLibraryShellElement || !imageLibrarySidebarElement || !imageLibraryContentElement || activePortfolioPage !== 'images' || !shouldUseImageLibraryPinnedScroll()) {
         mouseTrailShellElement?.style.setProperty('--image-shell-pin-offset', '0px');
         mouseTrailShellElement?.classList.remove('is-image-shell-pinned');
         imageLibraryContentElement?.style.removeProperty('--image-library-stage-height');
@@ -1645,7 +1709,8 @@ function syncImageLibraryPinnedScroll() {
 
     mouseTrailShellElement.style.setProperty('--image-shell-pin-offset', `${progress}px`);
     mouseTrailShellElement.classList.toggle('is-image-shell-pinned', progress > 0 && progress < sequence.totalScrollLength);
-    imageLibraryContinuousTrackElement.style.transform = `translate3d(0, ${-progress}px, 0)`;
+    const trackProgress = Math.max(0, progress - sequence.trackTopGuard);
+    imageLibraryContinuousTrackElement.style.transform = `translate3d(0, ${-trackProgress}px, 0)`;
 }
 
 function scheduleImageLibraryPinnedScrollSync() {
@@ -1658,7 +1723,7 @@ function scheduleImageLibraryPinnedScrollSync() {
 
 function scrollImageGalleryToCategory(categoryKey) {
     const scrollRoot = document.scrollingElement || document.documentElement;
-    if (activePortfolioPage !== 'images' || window.innerWidth <= 980 || !scrollRoot) {
+    if (activePortfolioPage !== 'images' || !shouldUseImageLibraryPinnedScroll() || !scrollRoot) {
         applyImageGalleryCategoryState(categoryKey);
         const section = getImageGalleryContinuousSection(categoryKey);
         section?.element.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1708,7 +1773,7 @@ function scrollImagePageToSection(targetKey) {
         return;
     }
 
-    if (activePortfolioPage !== 'images' || window.innerWidth <= 980) {
+    if (activePortfolioPage !== 'images' || !shouldUseImageLibraryPinnedScroll()) {
         targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
     }
@@ -1758,6 +1823,7 @@ function initImageComparisons() {
         element.classList.remove('is-near-start', 'is-near-end');
 
         element.addEventListener('pointerdown', (event) => {
+            event.preventDefault();
             isDragging = true;
             element.setPointerCapture(event.pointerId);
             setImageComparisonPosition(element, event.clientX);
@@ -1765,15 +1831,22 @@ function initImageComparisons() {
 
         element.addEventListener('pointermove', (event) => {
             if (isDragging) {
+                event.preventDefault();
                 setImageComparisonPosition(element, event.clientX);
             }
         });
 
-        element.addEventListener('pointerup', () => {
+        element.addEventListener('pointerup', (event) => {
+            if (isDragging) {
+                event.preventDefault();
+            }
             isDragging = false;
         });
 
-        element.addEventListener('pointercancel', () => {
+        element.addEventListener('pointercancel', (event) => {
+            if (isDragging) {
+                event.preventDefault();
+            }
             isDragging = false;
         });
     });

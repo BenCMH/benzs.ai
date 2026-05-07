@@ -239,39 +239,83 @@ a {
     position: relative;
     width: 2.7rem;
     height: 2.7rem;
-    display: inline-grid;
-    place-items: center;
+    display: inline-block;
     border: 0;
     background: transparent;
     padding: 0;
+    cursor: pointer;
 }
 
-.hamburger-menu span {
+.hamburger-dot {
     position: absolute;
-    width: 1.35rem;
-    height: 2px;
-    background: #fff;
-    transition: transform 0.24s ease, opacity 0.24s ease;
-}
-
-.hamburger-menu span:nth-child(1) {
-    transform: translateY(-0.38rem);
-}
-
-.hamburger-menu span:nth-child(3) {
-    transform: translateY(0.38rem);
-}
-
-.hamburger-menu.is-active span:nth-child(1) {
-    transform: rotate(45deg);
-}
-
-.hamburger-menu.is-active span:nth-child(2) {
+    left: 50%;
+    top: 50%;
+    width: 0.38rem;
+    height: 0.38rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.92);
+    background: transparent;
     opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+    transition:
+        opacity 0.2s ease,
+        transform 0.34s cubic-bezier(0.2, 0.86, 0.28, 1),
+        background-color 0.22s ease,
+        border-color 0.22s ease;
 }
 
-.hamburger-menu.is-active span:nth-child(3) {
-    transform: rotate(-45deg);
+.hamburger-dot-center {
+    width: 0.72rem;
+    height: 0.72rem;
+    opacity: 1;
+    animation: hamburger-core-breathe 3.4s ease-in-out infinite;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.hamburger-menu:hover .hamburger-dot,
+.hamburger-menu:focus-visible .hamburger-dot,
+.hamburger-menu.is-active .hamburger-dot {
+    width: 0.38rem;
+    height: 0.38rem;
+    opacity: 1;
+    border-color: #fff;
+    background: #fff;
+    animation: none;
+}
+
+.hamburger-menu:hover .hamburger-dot-center,
+.hamburger-menu:focus-visible .hamburger-dot-center,
+.hamburger-menu.is-active .hamburger-dot-center {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.hamburger-menu:hover .hamburger-dot-top,
+.hamburger-menu:focus-visible .hamburger-dot-top,
+.hamburger-menu.is-active .hamburger-dot-top {
+    transform: translate(-50%, calc(-50% - 0.78rem)) scale(1);
+}
+
+.hamburger-menu:hover .hamburger-dot-left,
+.hamburger-menu:focus-visible .hamburger-dot-left,
+.hamburger-menu.is-active .hamburger-dot-left {
+    transform: translate(calc(-50% - 0.68rem), calc(-50% + 0.46rem)) scale(1);
+}
+
+.hamburger-menu:hover .hamburger-dot-right,
+.hamburger-menu:focus-visible .hamburger-dot-right,
+.hamburger-menu.is-active .hamburger-dot-right {
+    transform: translate(calc(-50% + 0.68rem), calc(-50% + 0.46rem)) scale(1);
+}
+
+@keyframes hamburger-core-breathe {
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(0.86);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.14);
+    }
 }
 
 .menu-overlay {

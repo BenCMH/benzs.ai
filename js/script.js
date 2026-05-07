@@ -98,6 +98,7 @@ let videoOverlayPlayer = null;
 let videoOverlayCloseButton = null;
 let overlaySourceVideo = null;
 let overlaySourceShouldResume = false;
+let isSyncingOverlayAudio = false;
 let imageOverlayElement = null;
 let imageOverlayImage = null;
 let imageOverlayCloseButton = null;
@@ -686,6 +687,39 @@ function ensureVideoOverlay() {
     videoOverlayCloseButton?.addEventListener('click', closeVideoOverlay);
 }
 
+function createVideoOverlayPlayer({ muted = false, volume = 1 } = {}) {
+    const overlayInner = videoOverlayElement?.querySelector('.media-overlay-inner');
+    if (!overlayInner) {
+        return null;
+    }
+
+    const player = document.createElement('video');
+    player.playsInline = true;
+    player.setAttribute('controlslist', 'nofullscreen nodownload noremoteplayback');
+    player.disablePictureInPicture = true;
+    player.preload = 'metadata';
+    if (muted) {
+        player.setAttribute('muted', '');
+    }
+    player.defaultMuted = muted;
+    player.muted = muted;
+    player.volume = muted ? 0 : volume;
+    player.controls = true;
+    player.addEventListener('volumechange', syncCarouselAudioFromOverlay);
+
+    if (videoOverlayPlayer) {
+        videoOverlayPlayer.pause();
+        videoOverlayPlayer.removeAttribute('src');
+        videoOverlayPlayer.load();
+        videoOverlayPlayer.replaceWith(player);
+    } else {
+        overlayInner.appendChild(player);
+    }
+
+    videoOverlayPlayer = player;
+    return player;
+}
+
 function getVideoSource(video) {
     if (!(video instanceof HTMLVideoElement)) {
         return '';
@@ -719,6 +753,83 @@ function hydrateLazyVideo(video) {
 function playLazyVideo(video) {
     hydrateLazyVideo(video);
     return video.play().catch(() => undefined);
+}
+
+function isCarouselVideo(video) {
+    return video instanceof HTMLVideoElement && Boolean(video.closest('.carousel-item'));
+}
+
+function applyCarouselAudioState(syncOverlay = true) {
+    carouselVideos.forEach((video) => {
+        video.muted = isMuted;
+        video.volume = isMuted ? 0 : currentVolume;
+    });
+
+    if (syncOverlay) {
+        applyOverlayAudioStateFromCarousel();
+    }
+}
+
+function syncVolumeSliderFromState() {
+    if (!volumeSliderElement) {
+        return;
+    }
+
+    volumeSliderElement.value = String(Math.round(currentVolume * 100));
+}
+
+function syncCarouselAudioFromOverlay() {
+    if (isSyncingOverlayAudio || !videoOverlayPlayer || !isCarouselVideo(overlaySourceVideo)) {
+        return;
+    }
+
+    const overlayVolume = Math.max(0, Math.min(1, Number.isFinite(videoOverlayPlayer.volume) ? videoOverlayPlayer.volume : currentVolume));
+    if (videoOverlayPlayer.muted && overlayVolume <= 0) {
+        currentVolume = lastVolume || currentVolume || 0.72;
+    } else if (overlayVolume > 0) {
+        currentVolume = overlayVolume;
+        lastVolume = overlayVolume;
+    } else {
+        currentVolume = 0;
+    }
+
+    isMuted = videoOverlayPlayer.muted || overlayVolume <= 0;
+    applyCarouselAudioState(false);
+    syncVolumeSliderFromState();
+    syncMuteButtonState();
+}
+
+function applyOverlayAudioStateFromCarousel() {
+    if (!videoOverlayPlayer || !isCarouselVideo(overlaySourceVideo)) {
+        return;
+    }
+
+    const targetVolume = isMuted ? 0 : currentVolume || lastVolume || 0.72;
+    isSyncingOverlayAudio = true;
+    if (isMuted) {
+        videoOverlayPlayer.setAttribute('muted', '');
+    } else {
+        videoOverlayPlayer.removeAttribute('muted');
+    }
+    videoOverlayPlayer.volume = targetVolume;
+    videoOverlayPlayer.defaultMuted = isMuted;
+    videoOverlayPlayer.muted = isMuted;
+    window.setTimeout(() => {
+        isSyncingOverlayAudio = false;
+    }, 120);
+}
+
+function refreshVideoOverlayNativeControls() {
+    if (!videoOverlayPlayer || !videoOverlayElement?.classList.contains('is-open')) {
+        return;
+    }
+
+    videoOverlayPlayer.controls = false;
+    window.requestAnimationFrame(() => {
+        if (videoOverlayPlayer) {
+            videoOverlayPlayer.controls = true;
+        }
+    });
 }
 
 function initViewportLazyAutoplayVideos() {
@@ -756,7 +867,7 @@ function initViewportLazyAutoplayVideos() {
 }
 
 function openVideoOverlay(video) {
-    if (!(video instanceof HTMLVideoElement) || !videoOverlayElement || !videoOverlayPlayer) {
+    if (!(video instanceof HTMLVideoElement) || !videoOverlayElement) {
         return;
     }
 
@@ -765,27 +876,61 @@ function openVideoOverlay(video) {
         return;
     }
 
+    const sourceIsCarouselVideo = isCarouselVideo(video);
+    const initialOverlayMuted = sourceIsCarouselVideo ? isMuted : video.muted;
+    const initialOverlayVolume = sourceIsCarouselVideo
+        ? (isMuted ? 0 : currentVolume || lastVolume || 0.72)
+        : (Number.isFinite(video.volume) ? video.volume : 1);
+    const overlayPlayer = createVideoOverlayPlayer({
+        muted: initialOverlayMuted,
+        volume: initialOverlayVolume
+    });
+    if (!overlayPlayer) {
+        return;
+    }
+
     overlaySourceVideo = video;
     overlaySourceShouldResume = !video.paused && !video.ended;
+    if (sourceIsCarouselVideo) {
+        isCarouselPlaybackEnabled = false;
+        carouselVideos.forEach((carouselVideo) => carouselVideo.pause());
+    }
     const sourceCurrentTime = Number.isFinite(video.currentTime) ? video.currentTime : 0;
     video.pause();
-    videoOverlayPlayer.controls = true;
-    videoOverlayPlayer.controlsList?.add('nofullscreen');
-    videoOverlayPlayer.controlsList?.add('nodownload');
-    videoOverlayPlayer.controlsList?.add('noremoteplayback');
-    videoOverlayPlayer.disablePictureInPicture = true;
-    videoOverlayPlayer.preload = 'metadata';
-    videoOverlayPlayer.src = source;
-    videoOverlayPlayer.poster = video.getAttribute('poster') || '';
-    videoOverlayPlayer.load();
-    videoOverlayPlayer.addEventListener('loadedmetadata', () => {
-        if (sourceCurrentTime > 0 && Number.isFinite(videoOverlayPlayer.duration)) {
-            videoOverlayPlayer.currentTime = Math.min(sourceCurrentTime, Math.max(0, videoOverlayPlayer.duration - 0.05));
+    if (sourceIsCarouselVideo) {
+        applyOverlayAudioStateFromCarousel();
+    } else {
+        if (video.muted) {
+            overlayPlayer.setAttribute('muted', '');
+        } else {
+            overlayPlayer.removeAttribute('muted');
+        }
+        overlayPlayer.defaultMuted = video.muted;
+        overlayPlayer.muted = video.muted;
+        overlayPlayer.volume = Number.isFinite(video.volume) ? video.volume : 1;
+    }
+    overlayPlayer.src = source;
+    overlayPlayer.poster = video.getAttribute('poster') || '';
+    overlayPlayer.load();
+    overlayPlayer.addEventListener('loadedmetadata', () => {
+        if (sourceIsCarouselVideo) {
+            applyOverlayAudioStateFromCarousel();
+        }
+        if (sourceCurrentTime > 0 && Number.isFinite(overlayPlayer.duration)) {
+            overlayPlayer.currentTime = Math.min(sourceCurrentTime, Math.max(0, overlayPlayer.duration - 0.05));
         }
     }, { once: true });
     videoOverlayElement.classList.add('is-open');
     document.body.style.overflow = 'hidden';
-    videoOverlayPlayer.play().catch(() => undefined);
+    if (!isCarouselVideo(video) || overlaySourceShouldResume) {
+        overlayPlayer.play()
+            .then(() => {
+                if (sourceIsCarouselVideo) {
+                    applyOverlayAudioStateFromCarousel();
+                }
+            })
+            .catch(() => undefined);
+    }
 }
 
 function closeVideoOverlay() {
@@ -794,7 +939,10 @@ function closeVideoOverlay() {
     }
 
     videoOverlayElement.classList.remove('is-open');
+    const sourceIsCarouselVideo = isCarouselVideo(overlaySourceVideo);
+    const shouldResumeSourceVideo = !videoOverlayPlayer.paused && !videoOverlayPlayer.ended;
     videoOverlayPlayer.pause();
+    syncCarouselAudioFromOverlay();
     const overlayCurrentTime = Number.isFinite(videoOverlayPlayer.currentTime) ? videoOverlayPlayer.currentTime : null;
     if (overlaySourceVideo && overlayCurrentTime !== null) {
         overlaySourceVideo.currentTime = overlayCurrentTime;
@@ -802,7 +950,10 @@ function closeVideoOverlay() {
     videoOverlayPlayer.removeAttribute('src');
     videoOverlayPlayer.load();
     document.body.style.overflow = '';
-    if (overlaySourceShouldResume && overlaySourceVideo?.closest('.carousel-item') && activePortfolioPage === 'videos') {
+    if (sourceIsCarouselVideo) {
+        isCarouselPlaybackEnabled = shouldResumeSourceVideo;
+    }
+    if (shouldResumeSourceVideo && sourceIsCarouselVideo && activePortfolioPage === 'videos') {
         isCarouselPlaybackEnabled = true;
         playLazyVideo(overlaySourceVideo);
     }
@@ -1019,9 +1170,8 @@ function initCarouselDrag() {
 
 function playCurrentCarouselVideo() {
     const activeIndex = ((carouselPosition % totalCarouselItems) + totalCarouselItems) % totalCarouselItems;
+    applyCarouselAudioState();
     carouselVideos.forEach((video, index) => {
-        video.muted = isMuted;
-        video.volume = isMuted ? 0 : currentVolume;
         if (index === activeIndex && activePortfolioPage === 'videos' && isCarouselInView && isCarouselPlaybackEnabled) {
             playLazyVideo(video);
         } else {
@@ -1086,10 +1236,8 @@ function toggleMute() {
         }
     }
 
-    carouselVideos.forEach((video) => {
-        video.muted = isMuted;
-        video.volume = isMuted ? 0 : currentVolume;
-    });
+    applyCarouselAudioState();
+    refreshVideoOverlayNativeControls();
 
     syncMuteButtonState();
 }
@@ -1791,6 +1939,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentVolume = value;
         lastVolume = value > 0 ? value : lastVolume;
         isMuted = value <= 0;
+        applyCarouselAudioState();
         playCurrentCarouselVideo();
         syncMuteButtonState();
     });

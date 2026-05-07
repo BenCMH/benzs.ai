@@ -310,15 +310,18 @@ a {
     width: min(38rem, 72vw);
     aspect-ratio: 1 / 1;
     max-height: 70vh;
-    transition: transform 0.34s ease, opacity 0.24s ease;
+    transition: transform 0.42s cubic-bezier(0.2, 0.86, 0.28, 1), opacity 0.24s ease;
 }
 
 .menu-overlay-orbit {
     position: absolute;
     inset: 50% auto auto 50%;
     transform: translate(-50%, -50%);
-    width: 1.15rem;
-    height: 1.15rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    transition:
+        width 0.46s cubic-bezier(0.2, 0.86, 0.28, 1),
+        height 0.46s cubic-bezier(0.2, 0.86, 0.28, 1);
 }
 
 .menu-overlay-core {
@@ -326,8 +329,51 @@ a {
     width: 100%;
     height: 100%;
     border-radius: 999px;
-    background: #fff;
+    border: 1.5px solid rgba(255, 255, 255, 0.92);
+    background: transparent;
     box-shadow: 0 0 0 0.45rem rgba(255, 255, 255, 0.06);
+    animation: menu-core-breathe 3.8s ease-in-out infinite;
+    transition:
+        border-color 0.2s ease,
+        background-color 0.28s ease 0.08s,
+        box-shadow 0.34s ease;
+}
+
+.menu-overlay-nav.is-engaged .menu-overlay-orbit {
+    width: 1.15rem;
+    height: 1.15rem;
+}
+
+.menu-overlay-nav.is-engaged .menu-overlay-core {
+    animation: menu-core-settle 0.46s cubic-bezier(0.2, 0.86, 0.28, 1) forwards;
+    border-color: #fff;
+    background: #fff;
+    box-shadow: 0 0 0 0.18rem rgba(255, 255, 255, 0.08);
+}
+
+@keyframes menu-core-breathe {
+    0%,
+    100% {
+        transform: scale(0.88);
+    }
+
+    50% {
+        transform: scale(1.08);
+    }
+}
+
+@keyframes menu-core-settle {
+    0% {
+        transform: scale(var(--menu-core-current-scale, 1));
+    }
+
+    58% {
+        transform: scale(0.72);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .menu-overlay-link {
@@ -339,7 +385,47 @@ a {
     border: 0;
     padding: 0;
     background: transparent;
-    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.3);
+    transition:
+        left 0.48s cubic-bezier(0.2, 0.86, 0.28, 1),
+        top 0.48s cubic-bezier(0.2, 0.86, 0.28, 1),
+        opacity 0.2s ease,
+        transform 0.48s cubic-bezier(0.2, 0.86, 0.28, 1);
+}
+
+.menu-overlay-nav:not(.is-engaged) .menu-overlay-link {
+    left: 50%;
+    top: 50%;
+}
+
+.menu-overlay-nav.is-engaged .menu-overlay-link {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.menu-overlay-title {
+    width: max-content;
+    max-width: min(22rem, 72vw);
+    min-height: 1.05rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 1.35;
+    text-align: center;
+    text-transform: uppercase;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-0.35rem);
+    transition: opacity 0.18s ease, transform 0.22s ease;
+}
+
+.menu-overlay-title.is-visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .menu-overlay-link-videos {
@@ -589,12 +675,16 @@ a {
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.88);
     opacity: 0;
-    transform: translateY(-1.5rem);
-    transition: opacity 0.24s ease, transform 0.24s ease;
+    pointer-events: none;
+    transform: translateY(calc(-1 * min(19rem, 36vw))) scale(0.78);
+    transition:
+        opacity 0.22s ease,
+        transform 0.48s cubic-bezier(0.2, 0.86, 0.28, 1);
 }
 
-.menu-overlay.is-open .menu-overlay-about-link {
+.menu-overlay.is-open .menu-overlay-nav.is-engaged .menu-overlay-about-link {
     opacity: 1;
+    pointer-events: auto;
     transform: translateY(0);
 }
 
@@ -692,11 +782,11 @@ body[data-active-portfolio-page="images"] .site-glass-shell {
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    opacity: 0.16;
+    opacity: 0.24;
     mix-blend-mode: screen;
     background-image:
-        repeating-radial-gradient(circle at 17% 23%, rgba(255, 255, 255, 0.08) 0 0.5px, transparent 0.8px 3.5px),
-        repeating-radial-gradient(circle at 79% 71%, rgba(255, 255, 255, 0.045) 0 0.45px, transparent 0.75px 4.2px);
+        repeating-radial-gradient(circle at 17% 23%, rgba(255, 255, 255, 0.11) 0 0.5px, transparent 0.8px 3.5px),
+        repeating-radial-gradient(circle at 79% 71%, rgba(255, 255, 255, 0.065) 0 0.45px, transparent 0.75px 4.2px);
     background-size: 7rem 7rem, 5.5rem 5.5rem;
 }
 
@@ -1917,11 +2007,11 @@ footer {
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    opacity: 0.16;
+    opacity: 0.24;
     mix-blend-mode: screen;
     background-image:
-        repeating-radial-gradient(circle at 17% 23%, rgba(255, 255, 255, 0.08) 0 0.5px, transparent 0.8px 3.5px),
-        repeating-radial-gradient(circle at 79% 71%, rgba(255, 255, 255, 0.045) 0 0.45px, transparent 0.75px 4.2px);
+        repeating-radial-gradient(circle at 17% 23%, rgba(255, 255, 255, 0.11) 0 0.5px, transparent 0.8px 3.5px),
+        repeating-radial-gradient(circle at 79% 71%, rgba(255, 255, 255, 0.065) 0 0.45px, transparent 0.75px 4.2px);
     background-size: 7rem 7rem, 5.5rem 5.5rem;
 }
 

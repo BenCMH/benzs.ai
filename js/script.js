@@ -58,6 +58,7 @@ let hamburgerButtonElement = null;
 let menuOverlayElement = null;
 let menuOverlayNavElement = null;
 let menuOrbitElement = null;
+let menuOverlayTitleElement = null;
 let menuOverlayLinks = [];
 let menuOverlayAboutLinkElement = null;
 let menuOverlayAboutPanelElement = null;
@@ -436,8 +437,95 @@ function resetMenuOverlayAboutParallax() {
     menuOverlayNavElement.style.setProperty('--about-text-shift-y', '0px');
 }
 
+function getMenuCoreCurrentScale() {
+    const menuCoreElement = menuOrbitElement?.querySelector('.menu-overlay-core');
+    if (!menuCoreElement) {
+        return 1;
+    }
+
+    const transform = window.getComputedStyle(menuCoreElement).transform;
+    if (!transform || transform === 'none') {
+        return 1;
+    }
+
+    const matrixValues = transform.match(/matrix\(([^)]+)\)/)?.[1].split(',').map((value) => Number.parseFloat(value.trim()));
+    if (!matrixValues || matrixValues.length < 2 || matrixValues.some((value) => Number.isNaN(value))) {
+        return 1;
+    }
+
+    return Math.hypot(matrixValues[0], matrixValues[1]);
+}
+
 function setMenuOverlayEngaged(isEngaged) {
+    if (isEngaged && !menuOverlayNavElement?.classList.contains('is-engaged')) {
+        menuOverlayNavElement?.style.setProperty('--menu-core-current-scale', getMenuCoreCurrentScale().toFixed(3));
+    }
+
     menuOverlayNavElement?.classList.toggle('is-engaged', isEngaged);
+    if (!isEngaged) {
+        setMenuOverlayTitle('');
+    }
+}
+
+function collapseMenuOverlayToCore() {
+    if (!menuOverlayElement?.classList.contains('is-open')) {
+        return;
+    }
+
+    clearMenuPreviewState();
+    setMenuOverlayEngaged(false);
+}
+
+function setMenuOverlayTitle(title) {
+    if (!menuOverlayTitleElement) {
+        return;
+    }
+
+    menuOverlayTitleElement.textContent = title;
+    menuOverlayTitleElement.classList.toggle('is-visible', Boolean(title));
+}
+
+function isInsideMenuActivationArea(clientX, clientY) {
+    const activationWidth = Math.min(window.innerWidth * 0.9, Math.min(Math.max(window.innerHeight * 0.98, 520), 840));
+    const activationHeight = Math.min(window.innerHeight * 0.9, Math.min(Math.max(window.innerHeight * 0.88, 480), 760));
+    const halfWidth = activationWidth / 2;
+    const halfHeight = activationHeight / 2;
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    const isInsideCenterRect = Math.abs(clientX - centerX) <= halfWidth && Math.abs(clientY - centerY) <= halfHeight;
+
+    if (isInsideCenterRect) {
+        return true;
+    }
+
+    if (!menuOverlayNavElement?.classList.contains('is-engaged') || !menuOverlayAboutLinkElement) {
+        return false;
+    }
+
+    const aboutRect = menuOverlayAboutLinkElement.getBoundingClientRect();
+    const aboutPadding = 56;
+    const isInsideAboutTarget = (
+        clientX >= aboutRect.left - aboutPadding &&
+        clientX <= aboutRect.right + aboutPadding &&
+        clientY >= aboutRect.top - aboutPadding &&
+        clientY <= aboutRect.bottom + aboutPadding
+    );
+
+    if (isInsideAboutTarget) {
+        return true;
+    }
+
+    const bridgePadding = 88;
+    const bridgeLeft = Math.min(centerX - halfWidth, aboutRect.left - aboutPadding) - bridgePadding;
+    const bridgeRight = Math.max(centerX + halfWidth, aboutRect.right + aboutPadding) + bridgePadding;
+    const bridgeTop = centerY + halfHeight - 28;
+    const bridgeBottom = aboutRect.bottom + aboutPadding + 36;
+    return (
+        clientX >= bridgeLeft &&
+        clientX <= bridgeRight &&
+        clientY >= bridgeTop &&
+        clientY <= bridgeBottom
+    );
 }
 
 function closeMenuOverlay() {
@@ -469,7 +557,7 @@ function openMenuOverlay() {
     hamburgerButtonElement.classList.add('is-active');
     hamburgerButtonElement.setAttribute('aria-expanded', 'true');
     document.body.classList.add('menu-open');
-    setMenuOverlayEngaged(true);
+    setMenuOverlayEngaged(false);
 }
 
 function toggleMenuOverlay() {
@@ -485,16 +573,29 @@ function toggleMenuOverlay() {
 }
 
 function updateMenuOverlayProximity(clientX, clientY) {
-    if (!menuOverlayElement || !menuOrbitElement || !menuOverlayElement.classList.contains('is-open')) {
+    if (!menuOverlayElement || !menuOverlayElement.classList.contains('is-open')) {
         return;
     }
 
-    const orbitRect = menuOrbitElement.getBoundingClientRect();
-    const centerX = orbitRect.left + orbitRect.width / 2;
-    const centerY = orbitRect.top + orbitRect.height / 2;
-    const distance = Math.hypot(clientX - centerX, clientY - centerY);
+    if (menuOverlayNavElement?.classList.contains('is-about-mode')) {
+        return;
+    }
 
-    setMenuOverlayEngaged(distance <= 600);
+    const isEngaged = menuOverlayNavElement?.classList.contains('is-engaged');
+    const isInsideActivationArea = isInsideMenuActivationArea(clientX, clientY);
+
+    if (isEngaged && !isInsideActivationArea) {
+        collapseMenuOverlayToCore();
+        return;
+    }
+
+    if (menuOverlayNavElement?.classList.contains('is-engaged')) {
+        return;
+    }
+
+    if (isInsideActivationArea) {
+        setMenuOverlayEngaged(true);
+    }
 }
 
 function updateMenuOverlayAboutParallax(event) {
@@ -523,6 +624,10 @@ function toggleMenuOverlayAbout() {
     const willOpen = !menuOverlayNavElement.classList.contains('is-about-mode');
     menuOverlayNavElement.classList.toggle('is-about-mode', willOpen);
     menuOverlayAboutPanelElement.setAttribute('aria-hidden', String(!willOpen));
+    if (willOpen) {
+        clearMenuPreviewState();
+        setMenuOverlayEngaged(false);
+    }
     if (!willOpen) {
         resetMenuOverlayAboutParallax();
     }
@@ -1625,6 +1730,7 @@ document.addEventListener('DOMContentLoaded', () => {
     menuOverlayElement = document.getElementById('menuOverlay');
     menuOverlayNavElement = menuOverlayElement?.querySelector('.menu-overlay-nav') ?? null;
     menuOrbitElement = document.getElementById('menuOverlayOrbit');
+    menuOverlayTitleElement = document.getElementById('menuOverlayTitle');
     menuOverlayLinks = menuOverlayElement ? Array.from(menuOverlayElement.querySelectorAll('.menu-overlay-link')) : [];
     menuOverlayAboutLinkElement = document.getElementById('menuOverlayAboutLink');
     menuOverlayAboutPanelElement = document.getElementById('menuOverlayAboutPanel');
@@ -1705,6 +1811,12 @@ document.addEventListener('DOMContentLoaded', () => {
         updateMenuOverlayAboutParallax(event);
     }, { passive: true });
     menuOverlayElement?.addEventListener('click', handleMenuOverlayBackgroundClick);
+    menuOverlayNavElement?.addEventListener('mouseleave', collapseMenuOverlayToCore);
+    menuOverlayNavElement?.addEventListener('focusin', () => {
+        if (!menuOverlayNavElement?.classList.contains('is-about-mode')) {
+            setMenuOverlayEngaged(true);
+        }
+    });
 
     navbarElement?.addEventListener('mouseenter', () => {
         isNavbarHovered = true;
@@ -1729,6 +1841,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     menuOverlayLinks.forEach((button) => {
+        const title = button.getAttribute('data-menu-title') ?? '';
+        button.addEventListener('mouseenter', () => setMenuOverlayTitle(title));
+        button.addEventListener('mouseleave', () => setMenuOverlayTitle(''));
+        button.addEventListener('focus', () => setMenuOverlayTitle(title));
+        button.addEventListener('blur', () => setMenuOverlayTitle(''));
         button.addEventListener('click', () => {
             const pageKey = button.getAttribute('data-page');
             if (!pageKey) {

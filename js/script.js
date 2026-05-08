@@ -33,6 +33,8 @@ const SMOOTH_SCROLL_BOTTOM_SNAP = 2;
 const SMOOTH_SCROLL_EDGE_ZONE = 42;
 const PORTFOLIO_PAGE_SWITCH_TOP_THRESHOLD = 18;
 const NAVBAR_TOP_IDLE_THRESHOLD = 16;
+const COMPACT_NAVBAR_QUERY = '(max-width: 980px)';
+const CUSTOM_CURSOR_QUERY = '(min-width: 1201px) and (hover: hover) and (pointer: fine)';
 const MOBILE_NAVBAR_QUERY = '(max-width: 640px)';
 const MUTE_ICON_SRC = 'media/images/icons/mute.png';
 const VOLUME_ICON_SRC = 'media/images/icons/volume-on.png';
@@ -236,6 +238,14 @@ function handleSmoothWheel(event) {
 
     event.preventDefault();
 
+    if (pendingPortfolioPageSwitch) {
+        smoothScrollTargetY = 0;
+        if (!smoothScrollFrame) {
+            smoothScrollFrame = window.requestAnimationFrame(stepSmoothScroll);
+        }
+        return;
+    }
+
     const scrollRoot = document.scrollingElement || document.documentElement;
     const maxScroll = Math.max(0, scrollRoot.scrollHeight - window.innerHeight);
     const nextTarget = (smoothScrollTargetY ?? scrollRoot.scrollTop) + (deltaY * 2.24);
@@ -264,6 +274,13 @@ function initSmoothScroll() {
     window.addEventListener('wheel', handleSmoothWheel, { passive: false });
 }
 
+function blockMediaContextMenu(event) {
+    const target = event.target;
+    if (target instanceof Element && target.closest('img, video, picture, canvas, .media-overlay')) {
+        event.preventDefault();
+    }
+}
+
 function syncCustomCursor(event) {
     if (!(event instanceof MouseEvent) || !customCursorElement) {
         return;
@@ -275,11 +292,15 @@ function syncCustomCursor(event) {
 }
 
 function hideCustomCursor() {
-    customCursorElement?.classList.remove('is-visible', 'is-pressed');
+    customCursorElement?.classList.remove('is-visible', 'is-pressed', 'is-comparison-dragging');
 }
 
 function setCustomCursorPressed(isPressed) {
     customCursorElement?.classList.toggle('is-pressed', isPressed);
+}
+
+function setCustomCursorComparisonDragging(isDragging) {
+    customCursorElement?.classList.toggle('is-comparison-dragging', isDragging);
 }
 
 function handleMouseTrailMove(event) {
@@ -303,7 +324,7 @@ function syncNavbarThreshold() {
         return;
     }
 
-    if (window.matchMedia(MOBILE_NAVBAR_QUERY).matches) {
+    if (window.matchMedia(COMPACT_NAVBAR_QUERY).matches) {
         navbarElement.classList.remove('is-initial-state', 'is-collapsed');
         return;
     }
@@ -325,6 +346,12 @@ function scheduleNavbarBlurFade() {
 }
 
 function updateFloatingNavbar() {
+    if (window.matchMedia(COMPACT_NAVBAR_QUERY).matches) {
+        isNavbarScrollActive = false;
+        syncNavbarThreshold();
+        return;
+    }
+
     isNavbarScrollActive = window.scrollY > NAVBAR_TOP_IDLE_THRESHOLD && !isImageLibraryShellPinned();
     syncNavbarThreshold();
     if (isNavbarScrollActive) {
@@ -1083,6 +1110,52 @@ function openCarouselItemVideo(item) {
     }
 }
 
+function getActiveCarouselIndex() {
+    if (!totalCarouselItems) {
+        return 0;
+    }
+
+    return ((carouselPosition % totalCarouselItems) + totalCarouselItems) % totalCarouselItems;
+}
+
+function getShortestCarouselStep(fromIndex, toIndex) {
+    if (!totalCarouselItems) {
+        return 0;
+    }
+
+    let step = toIndex - fromIndex;
+    const half = totalCarouselItems / 2;
+    if (step > half) {
+        step -= totalCarouselItems;
+    } else if (step < -half) {
+        step += totalCarouselItems;
+    }
+
+    return step;
+}
+
+function selectOrOpenCarouselItem(item) {
+    if (!(item instanceof Element) || !totalCarouselItems) {
+        return;
+    }
+
+    const targetIndex = carouselItems.indexOf(item);
+    if (targetIndex < 0) {
+        return;
+    }
+
+    const activeIndex = getActiveCarouselIndex();
+    if (targetIndex !== activeIndex) {
+        isCarouselPlaybackEnabled = true;
+        carouselPosition += getShortestCarouselStep(activeIndex, targetIndex);
+        carouselDragOffsetX = 0;
+        updateCarousel();
+        return;
+    }
+
+    openCarouselItemVideo(item);
+}
+
 function getCarouselItemFromPoint(clientX, clientY) {
     const element = document.elementFromPoint(clientX, clientY);
     const directItem = element instanceof Element ? element.closest('.carousel-item') : null;
@@ -1164,7 +1237,7 @@ function initCarouselDrag() {
         const pointerTarget = getCarouselItemFromPoint(event.clientX, event.clientY);
         endCarouselDrag(event.pointerId);
         if (!draggedEnoughToSuppressClick) {
-            openCarouselItemVideo(pointerTarget);
+            selectOrOpenCarouselItem(pointerTarget);
         }
     });
 
@@ -1633,13 +1706,13 @@ function getImageLibrarySequenceMetrics() {
     }
 
     const startScrollY = naturalShellTop - imageLibraryPinViewportTop;
-    const isMobilePinnedGallery = window.matchMedia(MOBILE_NAVBAR_QUERY).matches;
+    const isCompactPinnedGallery = window.matchMedia(COMPACT_NAVBAR_QUERY).matches;
     const sidebarHeight = Math.ceil(imageLibrarySidebarElement.offsetHeight);
     const headHeight = Math.ceil(getActiveImageLibraryHead()?.offsetHeight || 0);
-    const trackTopGuard = isMobilePinnedGallery
+    const trackTopGuard = isCompactPinnedGallery
         ? Math.ceil(imageLibraryContinuousTrackElement.offsetTop)
         : 0;
-    const releaseGridHeight = isMobilePinnedGallery
+    const releaseGridHeight = isCompactPinnedGallery
         ? Math.max(0, stageHeight - headHeight - 24)
         : Math.max(0, sidebarHeight - headHeight - 24);
     const totalScrollLength = Math.max(0, imageLibraryContinuousTrackElement.scrollHeight - releaseGridHeight + trackTopGuard);
@@ -1670,7 +1743,7 @@ function isImageLibraryShellPinned() {
 }
 
 function shouldUseImageLibraryPinnedScroll() {
-    return window.innerWidth > 980 || window.matchMedia(MOBILE_NAVBAR_QUERY).matches;
+    return true;
 }
 
 function syncImageLibraryPinnedScroll() {
@@ -1826,12 +1899,16 @@ function initImageComparisons() {
             event.preventDefault();
             isDragging = true;
             element.setPointerCapture(event.pointerId);
+            element.classList.add('is-dragging');
+            setCustomCursorComparisonDragging(true);
+            syncCustomCursor(event);
             setImageComparisonPosition(element, event.clientX);
         });
 
         element.addEventListener('pointermove', (event) => {
             if (isDragging) {
                 event.preventDefault();
+                syncCustomCursor(event);
                 setImageComparisonPosition(element, event.clientX);
             }
         });
@@ -1839,15 +1916,21 @@ function initImageComparisons() {
         element.addEventListener('pointerup', (event) => {
             if (isDragging) {
                 event.preventDefault();
+                syncCustomCursor(event);
             }
             isDragging = false;
+            element.classList.remove('is-dragging');
+            setCustomCursorComparisonDragging(false);
         });
 
         element.addEventListener('pointercancel', (event) => {
             if (isDragging) {
                 event.preventDefault();
+                syncCustomCursor(event);
             }
             isDragging = false;
+            element.classList.remove('is-dragging');
+            setCustomCursorComparisonDragging(false);
         });
     });
 }
@@ -2029,13 +2112,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     syncMuteButtonState();
 
-    if (customCursorElement && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    if (customCursorElement && window.matchMedia(CUSTOM_CURSOR_QUERY).matches) {
+        document.body.classList.add('has-custom-cursor');
         document.addEventListener('mousemove', syncCustomCursor, { passive: true });
         document.addEventListener('mousedown', () => setCustomCursorPressed(true));
         document.addEventListener('mouseup', () => setCustomCursorPressed(false));
         document.addEventListener('mouseleave', hideCustomCursor);
         window.addEventListener('blur', hideCustomCursor);
+    } else {
+        document.body.classList.remove('has-custom-cursor');
+        hideCustomCursor();
     }
+
+    document.addEventListener('contextmenu', blockMediaContextMenu);
 
     mouseTrailShellElement?.addEventListener('mousemove', handleMouseTrailMove, { passive: true });
     menuOverlayElement?.addEventListener('mousemove', (event) => {
@@ -2159,7 +2248,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', syncImageRestorationOptionHeight);
 
     document.querySelectorAll('.image-library-card img').forEach((image) => {
+        image.setAttribute('draggable', 'false');
         image.setAttribute('tabindex', '0');
+        image.addEventListener('dragstart', (event) => event.preventDefault());
         image.addEventListener('click', () => openImageOverlay(image));
         image.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' || event.key === ' ') {

@@ -1534,6 +1534,9 @@ video.is-loading-source {
     top: 5.8rem;
     z-index: 4;
     padding: 0 0 1.35rem;
+    contain: paint;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .image-library-mobile-category {
@@ -1547,6 +1550,8 @@ video.is-loading-source {
     letter-spacing: -0.04em;
     text-transform: uppercase;
     white-space: nowrap;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .image-library-grid {

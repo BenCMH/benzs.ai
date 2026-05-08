@@ -95,6 +95,8 @@ let imageLibraryContinuousHeadTitleElement = null;
 let imageLibraryMobileCategorySelectElement = null;
 let imageLibraryContinuousGridElement = null;
 let imageLibraryContinuousTrackElement = null;
+let imageGalleryNavigationTargetCategory = null;
+let imageGalleryNavigationTargetProgress = null;
 let imageGalleryContinuousSections = [];
 let imageGalleryContinuousSectionLookup = new Map();
 let videoOverlayElement = null;
@@ -237,6 +239,11 @@ function handleSmoothWheel(event) {
     }
 
     event.preventDefault();
+
+    if (activePortfolioPage === 'images') {
+        imageGalleryNavigationTargetCategory = null;
+        imageGalleryNavigationTargetProgress = null;
+    }
 
     if (pendingPortfolioPageSwitch) {
         smoothScrollTargetY = 0;
@@ -1776,8 +1783,24 @@ function syncImageLibraryPinnedScroll() {
         }
     });
 
-    if (activeMetric.categoryKey !== activeImageGalleryCategory) {
-        applyImageGalleryCategoryState(activeMetric.categoryKey);
+    let stateCategoryKey = activeMetric.categoryKey;
+    if (imageGalleryNavigationTargetCategory) {
+        const lockedMetric = sequence.metrics.find((metric) => metric.categoryKey === imageGalleryNavigationTargetCategory);
+        if (lockedMetric) {
+            stateCategoryKey = imageGalleryNavigationTargetCategory;
+            const targetProgress = imageGalleryNavigationTargetProgress ?? lockedMetric.startOffset;
+            if (Math.abs(progress - targetProgress) <= 3 || smoothScrollTargetY === null) {
+                imageGalleryNavigationTargetCategory = null;
+                imageGalleryNavigationTargetProgress = null;
+            }
+        } else {
+            imageGalleryNavigationTargetCategory = null;
+            imageGalleryNavigationTargetProgress = null;
+        }
+    }
+
+    if (stateCategoryKey !== activeImageGalleryCategory) {
+        applyImageGalleryCategoryState(stateCategoryKey);
     }
 
     mouseTrailShellElement.style.setProperty('--image-shell-pin-offset', `${progress}px`);
@@ -1819,6 +1842,9 @@ function scrollImageGalleryToCategory(categoryKey) {
         const currentProgress = Math.max(0, window.scrollY - sequence.startScrollY);
         const directionBias = targetOffset > currentProgress ? 24 : 0;
         const nextTargetY = Math.max(0, Math.min(maxScroll, sequence.startScrollY + targetOffset + directionBias));
+        imageGalleryNavigationTargetCategory = categoryKey;
+        imageGalleryNavigationTargetProgress = targetOffset + directionBias;
+        applyImageGalleryCategoryState(categoryKey);
         smoothScrollTargetY = nextTargetY;
         if (!smoothScrollFrame) {
             smoothScrollFrame = window.requestAnimationFrame(stepSmoothScroll);
@@ -1845,6 +1871,9 @@ function scrollImagePageToSection(targetKey) {
     if (!targetElement || !scrollRoot) {
         return;
     }
+
+    imageGalleryNavigationTargetCategory = null;
+    imageGalleryNavigationTargetProgress = null;
 
     if (activePortfolioPage !== 'images' || !shouldUseImageLibraryPinnedScroll()) {
         targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });

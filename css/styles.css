@@ -942,6 +942,7 @@ body[data-active-portfolio-page="images"] .site-glass-shell {
 
 .carousel-item video {
     width: 100%;
+    aspect-ratio: 16 / 9;
     display: block;
     background: rgba(0, 0, 0, 0.5);
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
@@ -1069,9 +1070,18 @@ body[data-active-portfolio-page="images"] .site-glass-shell {
 
 .gallery-media video {
     width: 100%;
+    aspect-ratio: 1 / 1;
     display: block;
     background: rgba(0, 0, 0, 0.5);
     cursor: pointer;
+}
+
+.gallery-item.wide .gallery-media video {
+    aspect-ratio: 16 / 9;
+}
+
+.gallery-item.tall .gallery-media video {
+    aspect-ratio: 9 / 16;
 }
 
 video[data-lazy-video] {

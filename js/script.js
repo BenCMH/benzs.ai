@@ -761,12 +761,16 @@ function createVideoOverlayPlayer({ muted = false, volume = 1 } = {}) {
     return player;
 }
 
-function getVideoSource(video) {
+function getVideoSource(video, preferFullSource = false) {
     if (!(video instanceof HTMLVideoElement)) {
         return '';
     }
 
     const source = video.querySelector('source');
+    if (preferFullSource && source?.dataset.fullSrc) {
+        return source.dataset.fullSrc;
+    }
+
     return source?.getAttribute('src') || source?.dataset.src || video.currentSrc || '';
 }
 
@@ -916,7 +920,7 @@ function openVideoOverlay(video) {
         return;
     }
 
-    const source = getVideoSource(video);
+    const source = getVideoSource(video, true);
     if (!source) {
         return;
     }
@@ -1069,7 +1073,7 @@ function openImageOverlay(image) {
         return;
     }
 
-    imageOverlayImage.src = image.currentSrc || image.src;
+    imageOverlayImage.src = image.dataset.fullSrc || image.currentSrc || image.src;
     imageOverlayImage.alt = image.alt || '';
     imageOverlayElement.classList.add('is-open');
     document.body.style.overflow = 'hidden';
@@ -2323,8 +2327,14 @@ document.addEventListener('DOMContentLoaded', () => {
     scheduleImageLibraryPinnedScrollSync();
     syncNavbarThreshold();
 
+    if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').catch(() => undefined);
+        }, { once: true });
+    }
+
     window.setTimeout(() => {
         siteLoaderElement?.classList.add('is-hidden');
         document.body.classList.remove('is-loading');
-    }, 900);
+    }, 260);
 });

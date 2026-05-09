@@ -1768,7 +1768,7 @@ function isImageLibraryShellPinned() {
 }
 
 function shouldUseImageLibraryPinnedScroll() {
-    return true;
+    return !window.matchMedia('(max-width: 640px)').matches;
 }
 
 function syncImageLibraryPinnedScroll() {

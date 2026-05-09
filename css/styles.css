@@ -2572,14 +2572,15 @@ body.has-custom-cursor .media-overlay img {
 
     .image-library-panel.is-active .image-library-grid,
     .image-library-panel-continuous .image-library-grid {
-        height: calc(var(--image-library-stage-height, 72vh) - var(--image-library-panel-head-height, 0px) - 1rem);
-        overflow: hidden;
-        padding-top: 3rem;
+        height: auto;
+        overflow: visible;
+        padding-top: 1rem;
     }
 
     .image-library-panel.is-active .image-library-grid-track,
     .image-library-panel-continuous .image-library-grid-track {
-        will-change: transform;
+        transform: none !important;
+        will-change: auto;
     }
 
     .image-comparison-options {

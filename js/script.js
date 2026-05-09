@@ -39,6 +39,15 @@ const MOBILE_NAVBAR_QUERY = '(max-width: 640px)';
 const MUTE_ICON_SRC = 'media/images/icons/mute.png';
 const VOLUME_ICON_SRC = 'media/images/icons/volume-on.png';
 const ACTIVE_PORTFOLIO_PAGE_STORAGE_KEY = 'benzs-active-portfolio-page';
+const PORTFOLIO_REDIRECT_PATH_STORAGE_KEY = 'benzs-redirect-path';
+const PORTFOLIO_PAGE_PATHS = {
+    videos: '/videos',
+    images: '/images-and-enhancement',
+    comfy: '/custom-solutions'
+};
+const PORTFOLIO_PATH_PAGES = Object.fromEntries(
+    Object.entries(PORTFOLIO_PAGE_PATHS).map(([pageKey, pathname]) => [pathname, pageKey])
+);
 
 let carouselItems = [];
 let carouselVideos = [];
@@ -1379,11 +1388,48 @@ function forgetActivePortfolioPage() {
 }
 
 function getRememberedPortfolioPage() {
+    const pageFromPath = getPortfolioPageFromPath();
+    if (pageFromPath) {
+        return pageFromPath;
+    }
+
     try {
         const pageKey = sessionStorage.getItem(ACTIVE_PORTFOLIO_PAGE_STORAGE_KEY);
         return portfolioPageMeta[pageKey] ? pageKey : activePortfolioPage;
     } catch {
         return activePortfolioPage;
+    }
+}
+
+function getPortfolioPageFromPath() {
+    try {
+        const redirectedPath = sessionStorage.getItem(PORTFOLIO_REDIRECT_PATH_STORAGE_KEY);
+        if (redirectedPath) {
+            sessionStorage.removeItem(PORTFOLIO_REDIRECT_PATH_STORAGE_KEY);
+            return PORTFOLIO_PATH_PAGES[redirectedPath.replace(/\/$/, '')] || null;
+        }
+    } catch {}
+
+    const pathname = window.location.pathname.replace(/\/$/, '') || '/';
+    if (pathname === '/' || pathname.endsWith('/index.html')) {
+        return null;
+    }
+
+    return PORTFOLIO_PATH_PAGES[pathname] || null;
+}
+
+function updatePortfolioPageUrl(pageKey, replace = false) {
+    const pathname = PORTFOLIO_PAGE_PATHS[pageKey] || PORTFOLIO_PAGE_PATHS.videos;
+    if (window.location.pathname === pathname) {
+        return;
+    }
+
+    const nextUrl = `${pathname}${window.location.search}${window.location.hash}`;
+    const state = { portfolioPage: pageKey };
+    if (replace) {
+        window.history.replaceState(state, '', nextUrl);
+    } else {
+        window.history.pushState(state, '', nextUrl);
     }
 }
 
@@ -1417,12 +1463,15 @@ function syncPortfolioPagesHeight(animate = false) {
     }, 520);
 }
 
-function switchPortfolioPage(pageKey, shouldScrollToTop = true) {
+function switchPortfolioPage(pageKey, shouldScrollToTop = true, shouldUpdateUrl = true, replaceUrl = false) {
     if (!portfolioPageMeta[pageKey]) {
         return;
     }
 
     activePortfolioPage = pageKey;
+    if (shouldUpdateUrl) {
+        updatePortfolioPageUrl(pageKey, replaceUrl);
+    }
     syncActivePortfolioPageAttribute();
     rememberActivePortfolioPage();
     portfolioPages.forEach((page) => {
@@ -2128,7 +2177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSmoothScroll();
     initImageComparisons();
     syncImageRestorationOptionHeight();
-    switchPortfolioPage(getRememberedPortfolioPage(), false);
+    switchPortfolioPage(getRememberedPortfolioPage(), false, true, true);
     window.scrollTo(0, 0);
     syncActivePortfolioPageAttribute();
     updatePortfolioSubtitle();
@@ -2227,6 +2276,15 @@ document.addEventListener('DOMContentLoaded', () => {
     contactWidgetToggleElement?.addEventListener('click', toggleContactWidget);
     contactWidgetCloseElement?.addEventListener('click', closeContactWidget);
     document.addEventListener('click', handleContactWidgetOutsideClick);
+    window.addEventListener('popstate', () => {
+        const pageKey = getPortfolioPageFromPath() || 'videos';
+        pendingPortfolioPageSwitch = null;
+        smoothScrollTargetY = null;
+        smoothScrollFrame = null;
+        switchPortfolioPage(pageKey, false, false);
+        window.scrollTo(0, 0);
+        updateFloatingNavbar();
+    });
 
     document.querySelectorAll('.contact-form').forEach((contactForm) => {
         contactForm.addEventListener('submit', submitContactForm);

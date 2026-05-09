@@ -1522,6 +1522,17 @@ function switchPortfolioPageFromNavigation(pageKey) {
 
     const scrollRoot = document.scrollingElement || document.documentElement;
     const currentTop = scrollRoot.scrollTop;
+    const shouldSkipPageSwitchScrollAnimation = window.matchMedia(COMPACT_NAVBAR_QUERY).matches;
+
+    if (shouldSkipPageSwitchScrollAnimation) {
+        pendingPortfolioPageSwitch = null;
+        smoothScrollTargetY = null;
+        smoothScrollFrame = null;
+        switchPortfolioPage(pageKey, false);
+        window.scrollTo(0, 0);
+        updateFloatingNavbar();
+        return;
+    }
 
     if (currentTop <= PORTFOLIO_PAGE_SWITCH_TOP_THRESHOLD) {
         pendingPortfolioPageSwitch = null;
@@ -1543,7 +1554,7 @@ function returnToVideoHome(event) {
     smoothScrollFrame = null;
     forgetActivePortfolioPage();
     switchPortfolioPage('videos', false);
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, left: 0, behavior: window.matchMedia(COMPACT_NAVBAR_QUERY).matches ? 'auto' : 'smooth' });
     updateFloatingNavbar();
 }
 

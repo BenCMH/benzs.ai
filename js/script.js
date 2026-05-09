@@ -95,6 +95,7 @@ let imageLibraryContinuousHeadTitleElement = null;
 let imageLibraryMobileCategorySelectElement = null;
 let imageLibraryContinuousGridElement = null;
 let imageLibraryContinuousTrackElement = null;
+let imageLibraryContinuousBuilt = false;
 let imageGalleryNavigationTargetCategory = null;
 let imageGalleryNavigationTargetProgress = null;
 let imageGalleryContinuousSections = [];
@@ -1435,6 +1436,9 @@ function switchPortfolioPage(pageKey, shouldScrollToTop = true) {
     updatePortfolioSubtitle();
     updatePortfolioPageLinks();
     imageLibraryPinViewportTop = null;
+    if (pageKey === 'images') {
+        ensureContinuousImageLibrary();
+    }
     scheduleImageLibraryPinnedScrollSync();
 
     if (pageKey === 'videos') {
@@ -1666,6 +1670,7 @@ function buildContinuousImageLibrary() {
     imageLibraryMobileCategorySelectElement = mobileCategorySelect;
     imageLibraryContinuousGridElement = grid;
     imageLibraryContinuousTrackElement = track;
+    imageLibraryContinuousBuilt = true;
     refreshImageGalleryContinuousSectionState();
 
     mobileCategorySelect.addEventListener('change', () => {
@@ -1676,6 +1681,15 @@ function buildContinuousImageLibrary() {
             scrollImagePageToSection(targetKey);
         }
     });
+}
+
+function ensureContinuousImageLibrary() {
+    if (imageLibraryContinuousBuilt) {
+        return;
+    }
+
+    buildContinuousImageLibrary();
+    applyImageGalleryCategoryState(activeImageGalleryCategory);
 }
 
 function applyImageGalleryCategoryState(categoryKey) {
@@ -1822,6 +1836,7 @@ function scheduleImageLibraryPinnedScrollSync() {
 }
 
 function scrollImageGalleryToCategory(categoryKey) {
+    ensureContinuousImageLibrary();
     const scrollRoot = document.scrollingElement || document.documentElement;
     if (activePortfolioPage !== 'images' || !shouldUseImageLibraryPinnedScroll() || !scrollRoot) {
         applyImageGalleryCategoryState(categoryKey);
@@ -1869,6 +1884,7 @@ function getImageSectionTargetId(targetKey) {
 }
 
 function scrollImagePageToSection(targetKey) {
+    ensureContinuousImageLibrary();
     const targetElement = document.getElementById(getImageSectionTargetId(targetKey));
     const scrollRoot = document.scrollingElement || document.documentElement;
 
@@ -2110,8 +2126,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ensureVideoOverlay();
     ensureImageOverlay();
     initSmoothScroll();
-    buildContinuousImageLibrary();
-    applyImageGalleryCategoryState(activeImageGalleryCategory);
     initImageComparisons();
     syncImageRestorationOptionHeight();
     switchPortfolioPage(getRememberedPortfolioPage(), false);

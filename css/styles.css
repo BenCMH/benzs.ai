@@ -2427,6 +2427,10 @@ body.has-custom-cursor .media-overlay img {
 }
 
 @media (max-width: 980px) {
+    body {
+        background-attachment: scroll;
+    }
+
     html,
     body,
     body *,

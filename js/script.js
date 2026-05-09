@@ -519,7 +519,15 @@ function setMenuOverlayEngaged(isEngaged) {
     }
 }
 
+function shouldUseMenuHoverActivation() {
+    return window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 981px)').matches;
+}
+
 function collapseMenuOverlayToCore() {
+    if (!shouldUseMenuHoverActivation()) {
+        return;
+    }
+
     if (!menuOverlayElement?.classList.contains('is-open')) {
         return;
     }
@@ -609,7 +617,7 @@ function openMenuOverlay() {
     hamburgerButtonElement.classList.add('is-active');
     hamburgerButtonElement.setAttribute('aria-expanded', 'true');
     document.body.classList.add('menu-open');
-    setMenuOverlayEngaged(false);
+    setMenuOverlayEngaged(!shouldUseMenuHoverActivation());
 }
 
 function toggleMenuOverlay() {
@@ -625,6 +633,10 @@ function toggleMenuOverlay() {
 }
 
 function updateMenuOverlayProximity(clientX, clientY) {
+    if (!shouldUseMenuHoverActivation()) {
+        return;
+    }
+
     if (!menuOverlayElement || !menuOverlayElement.classList.contains('is-open')) {
         return;
     }

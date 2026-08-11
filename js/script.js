@@ -96,6 +96,9 @@ let imageSectionButtons = [];
 let imageComparisonElements = [];
 let imageComparisonOptionButtons = [];
 let imageRestorationOptionButtons = [];
+let imageShowcasePreloadImages = [];
+let hasPreloadedImageShowcaseMedia = false;
+let hasPreloadedComfyShowcaseMedia = false;
 let imageLibraryPinViewportTop = null;
 let imageLibraryPinnedScrollFrame = null;
 let imageLibraryContinuousPanelElement = null;
@@ -923,6 +926,73 @@ function refreshVideoOverlayNativeControls() {
     });
 }
 
+function preloadImagePageShowcaseMedia() {
+    if (hasPreloadedImageShowcaseMedia) {
+        return;
+    }
+
+    const imagePage = document.querySelector('[data-portfolio-page="images"]');
+    if (!(imagePage instanceof HTMLElement)) {
+        return;
+    }
+
+    hasPreloadedImageShowcaseMedia = true;
+    const visibleImages = Array.from(imagePage.querySelectorAll(
+        '.image-restylize-card-still img, .image-restoration-compare img, .image-restoration-option img'
+    ));
+    visibleImages.forEach((image) => {
+        if (!(image instanceof HTMLImageElement)) {
+            return;
+        }
+
+        image.loading = 'eager';
+        if (typeof image.decode === 'function') {
+            image.decode().catch(() => undefined);
+        }
+    });
+
+    const restorationSources = new Set();
+    imageRestorationOptionButtons.forEach((button) => {
+        ['data-before-src', 'data-after-src'].forEach((attribute) => {
+            const source = button.getAttribute(attribute);
+            if (source) {
+                restorationSources.add(source);
+            }
+        });
+    });
+
+    imageShowcasePreloadImages = Array.from(restorationSources, (source) => {
+        const image = new Image();
+        image.decoding = 'async';
+        image.fetchPriority = 'low';
+        image.src = source;
+        return image;
+    });
+}
+
+function preloadComfyShowcaseMedia() {
+    if (hasPreloadedComfyShowcaseMedia) {
+        return;
+    }
+
+    const comfyPage = document.querySelector('[data-portfolio-page="comfy"]');
+    if (!(comfyPage instanceof HTMLElement)) {
+        return;
+    }
+
+    hasPreloadedComfyShowcaseMedia = true;
+    comfyPage.querySelectorAll('.comfy-solutions-page img').forEach((image) => {
+        if (!(image instanceof HTMLImageElement)) {
+            return;
+        }
+
+        image.loading = 'eager';
+        if (typeof image.decode === 'function') {
+            image.decode().catch(() => undefined);
+        }
+    });
+}
+
 function initViewportLazyAutoplayVideos() {
     const lazyAutoplayVideos = Array.from(document.querySelectorAll('video[data-lazy-video][autoplay][muted][loop]'))
         .filter((video) => !video.closest('.carousel-item'));
@@ -1519,6 +1589,9 @@ function switchPortfolioPage(pageKey, shouldScrollToTop = true, shouldUpdateUrl 
     imageLibraryPinViewportTop = null;
     if (pageKey === 'images') {
         ensureContinuousImageLibrary();
+        preloadImagePageShowcaseMedia();
+    } else if (pageKey === 'comfy') {
+        preloadComfyShowcaseMedia();
     }
     scheduleImageLibraryPinnedScrollSync();
 
@@ -2465,7 +2538,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js').catch(() => undefined);
+            navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' })
+                .then((registration) => registration.update())
+                .catch(() => undefined);
         }, { once: true });
     }
 

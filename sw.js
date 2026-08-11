@@ -1,4 +1,4 @@
-const CACHE_NAME = 'benzs-media-v1';
+const CACHE_NAME = 'benzs-media-v2';
 const MEDIA_CACHE_PATHS = [
     '/media/images/generated/',
     '/media/images/video-posters/',

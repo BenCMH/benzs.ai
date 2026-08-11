@@ -449,22 +449,42 @@ async function submitContactForm(event) {
     setContactFormStatus(form, 'Sending message...');
 
     try {
+        const payload = Object.fromEntries(new FormData(form).entries());
+        payload._url = window.location.href;
+
         const response = await fetch(endpoint, {
             method: 'POST',
-            body: new FormData(form),
             headers: {
+                'Content-Type': 'application/json',
                 Accept: 'application/json'
-            }
+            },
+            body: JSON.stringify(payload)
         });
 
-        if (!response.ok) {
-            throw new Error('Contact form submission failed.');
+        let result = null;
+        try {
+            result = await response.json();
+        } catch {
+            // A successful FormSubmit request should always return JSON.
+        }
+
+        const submissionSucceeded = result?.success === true || result?.success === 'true';
+        if (!response.ok || !submissionSucceeded) {
+            throw new Error(result?.message || 'The message could not be delivered. Please try again.');
         }
 
         form.reset();
-        setContactFormStatus(form, 'Message sent. I will get back to you soon.', 'success');
-    } catch {
-        setContactFormStatus(form, 'Something went wrong. Please try again or email me directly.', 'error');
+        const needsActivation = typeof result?.message === 'string' && /activat|confirm/i.test(result.message);
+        setContactFormStatus(
+            form,
+            needsActivation ? result.message : 'Message sent. I will get back to you soon.',
+            'success'
+        );
+    } catch (error) {
+        const message = error instanceof Error && error.message
+            ? error.message
+            : 'Something went wrong. Please try again or email me directly.';
+        setContactFormStatus(form, message, 'error');
     } finally {
         form.classList.remove('is-sending');
     }

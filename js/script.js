@@ -2378,14 +2378,35 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.image-library-card img').forEach((image) => {
         image.setAttribute('draggable', 'false');
         image.setAttribute('tabindex', '0');
-        image.addEventListener('dragstart', (event) => event.preventDefault());
-        image.addEventListener('click', () => openImageOverlay(image));
-        image.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                openImageOverlay(image);
-            }
-        });
+    });
+
+    imageLibraryContentElement?.addEventListener('dragstart', (event) => {
+        if (event.target instanceof HTMLImageElement && event.target.matches('.image-library-card img')) {
+            event.preventDefault();
+        }
+    });
+
+    imageLibraryContentElement?.addEventListener('click', (event) => {
+        const image = event.target instanceof Element
+            ? event.target.closest('.image-library-card img')
+            : null;
+        if (image instanceof HTMLImageElement) {
+            openImageOverlay(image);
+        }
+    });
+
+    imageLibraryContentElement?.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') {
+            return;
+        }
+
+        const image = event.target instanceof Element
+            ? event.target.closest('.image-library-card img')
+            : null;
+        if (image instanceof HTMLImageElement) {
+            event.preventDefault();
+            openImageOverlay(image);
+        }
     });
 
     window.addEventListener('scroll', () => {
